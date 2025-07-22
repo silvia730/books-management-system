@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SomaFy Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Admin Login Modal (full page overlay) -->
+    <div id="admin-login-modal" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(245,247,250,0.98);z-index:9999;display:flex;align-items:center;justify-content:center;">
+        <div style="background:#fff;padding:2.5rem 2rem;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.08);max-width:400px;width:100%;text-align:center;">
+            <h2 style="color:#0066cc;margin-bottom:1.5rem;"><i class="fas fa-user-shield"></i> Admin Login</h2>
+            <form id="admin-login-form" style="display:flex;flex-direction:column;gap:1.2rem;">
+                <input type="text" placeholder="Username" required style="padding:0.9rem 1rem;border-radius:8px;border:1px solid #e0e0e0;font-size:1rem;">
+                <input type="password" placeholder="Password" required style="padding:0.9rem 1rem;border-radius:8px;border:1px solid #e0e0e0;font-size:1rem;">
+                <button type="submit" style="padding:0.9rem 1rem;border-radius:8px;background:#0066cc;color:#fff;font-weight:600;border:none;font-size:1.1rem;cursor:pointer;transition:background 0.2s;">Login</button>
+                <div class="login-error" id="login-error" style="color:#B22222;margin-top:0.5rem;font-size:1rem;"></div>
+            </form>
+        </div>
+    </div>
+    <!-- Admin Dashboard Content (hidden until login) -->
+    <div id="admin-dashboard" style="display:none;">
+    <div class="admin-container">
+        <!-- Admin Sidebar -->
+        <div class="admin-sidebar">
+            <div class="admin-logo">
+                    <h2><img src="assets/logo.jpg" alt="SomaFy Logo" class="logo-img" style="height:32px;width:auto;vertical-align:middle;margin-right:8px;"> SomaFy Admin</h2>
+            </div>
+            <ul class="admin-menu">
+                    <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="#" data-section="upload"><i class="fas fa-upload"></i> Upload Resources</a></li>
+                    <li><a href="#" data-section="books"><i class="fas fa-book"></i> Books</a></li>
+                    <li><a href="#" data-section="papers"><i class="fas fa-file-alt"></i> Papers</a></li>
+                    <li><a href="#" data-section="setbooks"><i class="fas fa-book-reader"></i> Setbooks</a></li>
+                    <li><a href="#" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="#" id="admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+        <!-- Admin Main Content -->
+        <div class="admin-main">
+                <!-- Dashboard Section -->
+                <div id="section-dashboard">
+            <div class="admin-header">
+                <h1>Dashboard</h1>
+                <div class="admin-actions">
+                    <span><i class="fas fa-bell"></i></span>
+                    <span><i class="fas fa-user-circle"></i> Admin User</span>
+                </div>
+            </div>
+            <div class="admin-stats">
+                <div class="stat-card books">
+                    <i class="fas fa-book"></i>
+                            <div class="stat-value" id="stat-books">0</div>
+                    <div class="stat-label">Books</div>
+                </div>
+                <div class="stat-card papers">
+                    <i class="fas fa-file-alt"></i>
+                            <div class="stat-value" id="stat-papers">0</div>
+                    <div class="stat-label">Papers</div>
+                </div>
+                <div class="stat-card setbooks">
+                    <i class="fas fa-book-reader"></i>
+                            <div class="stat-value" id="stat-setbooks">0</div>
+                    <div class="stat-label">Setbooks</div>
+                </div>
+                <div class="stat-card users">
+                    <i class="fas fa-users"></i>
+                            <div class="stat-value" id="stat-users">0</div>
+                    <div class="stat-label">Users</div>
+                </div>
+            </div>
+                </div>
+                <!-- Upload Section -->
+                <div id="section-upload" style="display:none;">
+                <h2>Upload New Resource</h2>
+                <form id="upload-form">
+                        <div class="form-group">
+                            <label for="resource-type">Resource Type</label>
+                            <select id="resource-type" required>
+                                <option value="book">Book</option>
+                                <option value="paper">Paper</option>
+                                <option value="setbook">Setbook</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cover-input">Cover Image</label>
+                            <input type="file" id="cover-input" accept="image/*">
+                            <div id="cover-preview" style="margin:1rem 0;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" id="title" placeholder="Enter title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="class-grade">Class/Grade</label>
+                            <select id="class-grade" required>
+                                <option value="">Select Class/Grade</option>
+                                <optgroup label="KCPE">
+                                    <option value="std1">Standard 1</option>
+                                    <option value="std2">Standard 2</option>
+                                    <option value="std3">Standard 3</option>
+                                    <option value="std4">Standard 4</option>
+                                    <option value="std5">Standard 5</option>
+                                    <option value="std6">Standard 6</option>
+                                    <option value="std7">Standard 7</option>
+                                    <option value="std8">Standard 8</option>
+                                </optgroup>
+                                <optgroup label="KCSE">
+                                    <option value="form1">Form 1</option>
+                                    <option value="form2">Form 2</option>
+                                    <option value="form3">Form 3</option>
+                                    <option value="form4">Form 4</option>
+                                </optgroup>
+                                <optgroup label="CBC">
+                                    <option value="grade1">Grade 1</option>
+                                    <option value="grade2">Grade 2</option>
+                                    <option value="grade3">Grade 3</option>
+                                    <option value="grade4">Grade 4</option>
+                                    <option value="grade5">Grade 5</option>
+                                    <option value="grade6">Grade 6</option>
+                                    <option value="grade7">Grade 7</option>
+                                    <option value="grade8">Grade 8</option>
+                                    <option value="grade9">Grade 9</option>
+                                    <option value="grade10">Grade 10</option>
+                                    <option value="grade11">Grade 11</option>
+                                    <option value="grade12">Grade 12</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <select id="subject" required disabled>
+                                <option value="">Select Class/Grade First</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" placeholder="Enter description" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                </div>
+                <!-- Books Section -->
+                <div id="section-books" style="display:none;">
+                    <h2>Books</h2>
+                    <div id="books-list"></div>
+                </div>
+                <!-- Papers Section -->
+                <div id="section-papers" style="display:none;">
+                    <h2>Papers</h2>
+                    <div id="papers-list"></div>
+                </div>
+                <!-- Setbooks Section -->
+                <div id="section-setbooks" style="display:none;">
+                    <h2>Setbooks</h2>
+                    <div id="setbooks-list"></div>
+                </div>
+                <!-- Analytics Section -->
+                <div id="section-analytics" style="display:none;">
+                    <h2>Analytics</h2>
+                    <div id="analytics-content">Analytics coming soon...</div>
+                </div>
+                <!-- Settings Section -->
+                <div id="section-settings" style="display:none;">
+                    <h2>Settings</h2>
+                    <form id="settings-form">
+                        <label>Old Password</label>
+                        <input type="password" id="old-password" placeholder="Old Password" required>
+                        <label>New Password</label>
+                        <input type="password" id="new-password" placeholder="New Password" required>
+                        <button type="submit" class="btn btn-primary">Update Password</button>
+                        <div id="settings-message"></div>
+                    </form>
+                    </div>
+                    </div>
+                            </div>
+                        </div>
+                        
+    <div id="edit-resource-modal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10000;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);">
+        <div class="modal-content" style="max-width:420px;width:100%;margin:auto;position:relative;">
+            <span id="edit-modal-close" style="position:absolute;top:10px;right:18px;font-size:1.5rem;cursor:pointer;">&times;</span>
+            <h2>Edit Resource</h2>
+            <form id="edit-resource-form">
+                <input type="hidden" id="edit-resource-id">
+                <div class="form-group">
+                    <label for="edit-cover-input">Cover Image</label>
+                    <input type="file" id="edit-cover-input" accept="image/*">
+                    <div id="edit-cover-preview" style="margin:1rem 0;"></div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-title">Title</label>
+                    <input type="text" id="edit-title" required>
+                </div>
+                        <div class="form-group">
+                    <label for="edit-class-grade">Class/Grade</label>
+                    <select id="edit-class-grade" required></select>
+                            </div>
+                <div class="form-group">
+                    <label for="edit-subject">Subject</label>
+                    <select id="edit-subject" required></select>
+                        </div>
+                <div class="form-group">
+                    <label for="edit-description">Description</label>
+                    <textarea id="edit-description" required></textarea>
+                    </div>
+                <div class="form-group">
+                    <label for="edit-file-input">Resource File (PDF)</label>
+                    <input type="file" id="edit-file-input" accept="application/pdf">
+                    </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <div id="edit-modal-message" style="margin-top:0.5rem;"></div>
+                </form>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

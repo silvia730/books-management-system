@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Resource | SomaFy</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: #f5f7fa; text-align: center; padding: 4rem 1rem; }
+        .download-status { font-size: 1.2rem; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <h1>Thank You for Your Payment!</h1>
+    <div class="download-status" id="download-status">Verifying payment and preparing your download...</div>
+    <script>
+    function getQueryParam(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name);
+    }
+    const resourceId = getQueryParam('resource_id');
+    const email = getQueryParam('email');
+    const orderTrackingId = getQueryParam('orderTrackingId');
+    if (resourceId && email && orderTrackingId) {
+        fetch(`http://localhost:5000/api/download/${resourceId}?email=${encodeURIComponent(email)}&orderTrackingId=${encodeURIComponent(orderTrackingId)}`)
+            .then(res => {
+                if (res.status === 200) {
+                    return res.blob();
+                } else {
+                    throw new Error('Payment not confirmed or file not found.');
+                }
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'resource.pdf'; // You can set the filename dynamically if needed
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                document.getElementById('download-status').textContent = 'Your download should start automatically. If not, click here.';
+                document.getElementById('download-status').innerHTML += `<br><a href="${url}" download>Download Manually</a>`;
+            })
+            .catch(err => {
+                document.getElementById('download-status').textContent = err.message;
+            });
+    } else {
+        document.getElementById('download-status').textContent = 'Missing download information.';
+    }
+    </script>
+</body>
+</html> 

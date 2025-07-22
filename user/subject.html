@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Book Details | SomaFy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-book-open"></i>
+                <span>SomaFy</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#papers">Papers</a></li>
+                    <li><a href="index.html#setbooks">Setbooks</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="#" id="signin-link"><i class="fas fa-user"></i> Sign In</a>
+                <a href="#" class="btn btn-outline" id="register-link">Register</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <section class="subject-details-section">
+            <div class="subject-details-container">
+                <div class="subject-cover" id="subject-cover"></div>
+                <div class="subject-info">
+                    <h1 id="subject-title"></h1>
+                    <div class="subject-category" id="subject-category"></div>
+                    <p id="subject-description"></p>
+                    <div class="subject-price" id="subject-price"></div>
+                    <button class="btn btn-primary" id="subject-download">Download</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Payment Modal -->
+    <div id="modal-overlay" class="modal-overlay" style="display:none;"></div>
+    <div id="payment-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" data-modal="payment-modal">&times;</span>
+            <h2>Payment Required</h2>
+            <p>To download this resource, please complete the payment.</p>
+            <button class="btn btn-primary" id="simulate-payment">Simulate Payment</button>
+        </div>
+    </div>
+    <script src="subject.js"></script>
+</body>
+</html> 

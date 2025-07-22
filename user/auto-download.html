@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatic Download</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h2>Preparing your download...</h2>
+    <div id="status">Verifying payment. Please wait...</div>
+    <a id="download-link" class="hidden" download>Click here if your download does not start automatically.</a>
+    <script>
+    // Helper to get query params
+    function getQueryParam(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name);
+    }
+    const resourceId = getQueryParam('resource_id');
+    const email = getQueryParam('email');
+    const orderTrackingId = getQueryParam('orderTrackingId');
+    const statusDiv = document.getElementById('status');
+    const downloadLink = document.getElementById('download-link');
+
+    if (!resourceId || !email || !orderTrackingId) {
+        statusDiv.textContent = 'Missing download information. Please contact support.';
+    } else {
+        // Try to download the file
+        fetch(`http://localhost:5000/api/download/${resourceId}?email=${encodeURIComponent(email)}&orderTrackingId=${encodeURIComponent(orderTrackingId)}`)
+        .then(response => {
+            if (response.status === 200) {
+                return response.blob();
+            } else if (response.status === 403) {
+                throw new Error('Payment not completed or invalid.');
+            } else if (response.status === 404) {
+                throw new Error('Resource not found.');
+            } else {
+                throw new Error('Unexpected error.');
+            }
+        })
+        .then(blob => {
+            // Create a download link and auto-click it
+            const url = window.URL.createObjectURL(blob);
+            downloadLink.href = url;
+            downloadLink.download = 'resource.pdf';
+            downloadLink.classList.remove('hidden');
+            downloadLink.click();
+            statusDiv.textContent = 'Your download should begin automatically.';
+        })
+        .catch(err => {
+            statusDiv.textContent = err.message;
+        });
+    }
+    </script>
+</body>
+</html> 

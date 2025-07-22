@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SomaFy - Kenya's Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="assets/somafy logo.jpg" alt="SomaFy Logo" class="logo-img" style="height:36px;width:auto;vertical-align:middle;margin-right:8px;">
+                <span>SomaFy</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#papers">Papers</a></li>
+                    <li><a href="#setbooks">Setbooks</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="#"><i class="fas fa-user"></i> Sign In</a>
+                <a href="#" class="btn btn-outline">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Kenya's Premier Educational Resource Platform</h1>
+            <p>Access curriculum-aligned textbooks, revision papers, and setbooks for all Kenyan education systems</p>
+            
+            <div class="selector-container">
+                <h3>Find Your Learning Materials</h3>
+                <div class="selector-row">
+                    <div class="selector-group">
+                        <label>Select Class/Grade</label>
+                        <div class="custom-select">
+                            <select id="class-select">
+                                <option value="">Select Class/Grade</option>
+                                <optgroup label="KCPE">
+                                    <option value="std1">Standard 1</option>
+                                    <option value="std2">Standard 2</option>
+                                    <option value="std3">Standard 3</option>
+                                    <option value="std4">Standard 4</option>
+                                    <option value="std5">Standard 5</option>
+                                    <option value="std6">Standard 6</option>
+                                    <option value="std7">Standard 7</option>
+                                    <option value="std8">Standard 8</option>
+                                </optgroup>
+                                <optgroup label="KCSE">
+                                    <option value="form1">Form 1</option>
+                                    <option value="form2">Form 2</option>
+                                    <option value="form3">Form 3</option>
+                                    <option value="form4">Form 4</option>
+                                </optgroup>
+                                <optgroup label="CBC">
+                                    <option value="pp1">PP1</option>
+                                    <option value="pp2">PP2</option>
+                                    <option value="grade1">Grade 1</option>
+                                    <option value="grade2">Grade 2</option>
+                                    <option value="grade3">Grade 3</option>
+                                    <option value="grade4">Grade 4</option>
+                                    <option value="grade5">Grade 5</option>
+                                    <option value="grade6">Grade 6</option>
+                                    <option value="grade7">Grade 7</option>
+                                    <option value="grade8">Grade 8</option>
+                                    <option value="grade9">Grade 9</option>
+                                    <option value="grade10">Grade 10</option>
+                                    <option value="grade11">Grade 11</option>
+                                    <option value="grade12">Grade 12</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="selector-group">
+                        <label>Select Subject</label>
+                        <div class="custom-select">
+                            <select id="subject-select" disabled>
+                                <option value="">First select a class/grade</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button id="find-resources" class="btn btn-primary">Find Resources</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Revision Papers Slider Section -->
+    <section class="revision-section">
+        <h2 class="section-title">Top Revision Papers & Marking Schemes</h2>
+        <div class="revision-slider">
+            <div class="slider-container">
+                <!-- Slider items will be added dynamically -->
+            </div>
+            <button class="slider-arrow prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slider-arrow next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="slider-nav">
+                <!-- Navigation dots will be added dynamically -->
+            </div>
+        </div>
+        <div class="revision-cta">
+            <a href="#papers" class="btn btn-primary">View All Papers</a>
+        </div>
+    </section>
+
+    <!-- General Books Section -->
+    <section class="books-section">
+        <h2 class="section-title">Popular Learning Resources</h2>
+        <div class="books-grid">
+            <!-- Cards will be rendered here by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Papers Section -->
+    <section id="papers" class="books-section">
+        <h2 class="section-title">Past Papers</h2>
+        <div class="books-grid">
+            <!-- Cards will be rendered here by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Setbooks Section -->
+    <section id="setbooks" class="books-section">
+        <h2 class="section-title">Setbooks</h2>
+        <div class="books-grid">
+            <!-- Cards will be rendered here by JavaScript -->
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section" style="background:#f5f7fa;padding:3rem 0;">
+        <div class="about-container" style="max-width:900px;margin:0 auto;text-align:center;">
+            <h2>About SomaFy</h2>
+            <p style="font-size:1.1rem;margin:1.5rem 0;">SomaFy is Kenya's premier educational resource platform, providing students and teachers with access to curriculum-aligned textbooks, revision papers, setbooks, and more. Our mission is to make quality learning materials accessible to all, supporting academic excellence and lifelong learning.</p>
+            <ul style="list-style:none;padding:0;font-size:1.05rem;">
+                <li>✔️ Access resources for KCPE, KCSE, and CBC</li>
+                <li>✔️ Download past papers, setbooks, and general books</li>
+                <li>✔️ Easy navigation by class, grade, and subject</li>
+                <li>✔️ Secure downloads after payment</li>
+            </ul>
+        </div>
+    </section>
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section" style="background:#fff;padding:3rem 0;">
+        <div class="contact-container" style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;gap:2rem;align-items:flex-start;">
+            <div style="flex:1;min-width:260px;">
+                <h2>Contact Us</h2>
+                <form id="contact-form" style="display:flex;flex-direction:column;gap:1rem;">
+                    <input type="text" id="contact-name" placeholder="Your Name" required>
+                    <input type="email" id="contact-email" placeholder="Your Email" required>
+                    <textarea id="contact-message" placeholder="Your Message" rows="5" required></textarea>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <div id="contact-message-status" style="margin-top:0.5rem;"></div>
+                </form>
+            </div>
+            <div style="flex:1;min-width:260px;">
+                <h3>Contact Information</h3>
+                <ul style="list-style:none;padding:0;font-size:1.05rem;">
+                    <li><i class="fas fa-envelope"></i> info@somafy.co.ke</li>
+                    <li><i class="fas fa-phone"></i> +254 700 123 456</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <div class="footer-logo">SomaFy</div>
+                <p>Kenya's premier educational resource platform providing quality learning materials for all levels.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#papers">Past Papers</a></li>
+                    <li><a href="#setbooks">Setbooks</a></li>
+                    <li><a href="#">Subjects</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Education Systems</h3>
+                <ul class="footer-links">
+                    <li><a href="#">KCPE</a></li>
+                    <li><a href="#">KCSE</a></li>
+                    <li><a href="#">CBC</a></li>
+                    <li><a href="#">PP1 & PP2</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <ul class="footer-links">
+                    <li><i class="fas fa-envelope"></i> info@somafy.co.ke</li>
+                    <li><i class="fas fa-phone"></i> +254 700 123 456</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 SomaFy Educational Resources. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Sign In Modal -->
+    <div id="signin-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" data-modal="signin-modal">&times;</span>
+            <h2>Sign In</h2>
+            <form id="signin-form">
+                <input type="text" placeholder="Username or Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+            <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
+        </div>
+    </div>
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" data-modal="register-modal">&times;</span>
+            <h2>Register</h2>
+            <form id="register-form">
+                <input type="text" placeholder="Username" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+            <p>Already have an account? <a href="#" id="show-signin">Sign In</a></p>
+        </div>
+    </div>
+
+    <!-- Download/Payment Modal -->
+    <div id="download-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" data-modal="download-modal">&times;</span>
+            <h2>Download Resource</h2>
+            <form id="download-form">
+                <input type="text" id="download-name" placeholder="Your Name" required>
+                <input type="email" id="download-email" placeholder="Your Email" required>
+                <input type="tel" id="download-phone" placeholder="Your Phone Number" required>
+                <button type="submit" class="btn btn-primary">Continue</button>
+            </form>
+            <div id="download-modal-message" style="margin:1rem 0;"></div>
+            <button id="download-pesapal-btn" class="btn btn-primary" style="display:none;">Pay with PesaPal</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
