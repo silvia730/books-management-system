@@ -1,18 +1,10 @@
 // --- DASHBOARD STATS & SIDEBAR LOGIC ---
-let API_BASE = '';
+let API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
 
 function fetchApiBaseUrl() {
-    return fetch('https://books-management-system-bcr5.onrender.com/api/config')
-        .then(res => res.json())
-        .then(cfg => {
-            API_BASE = cfg.API_BASE_URL;
-            console.log('Admin API Base URL loaded:', API_BASE);
-        })
-        .catch(error => {
-            console.error('Failed to load API config:', error);
-            // Fallback to deployed backend for production
-            API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
-        });
+    // For now, use the hardcoded URL to ensure it works
+    console.log('Admin API Base URL set to:', API_BASE);
+    return Promise.resolve();
 }
 
 function fetchAndUpdateStats() {
