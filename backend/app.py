@@ -206,8 +206,9 @@ def pay():
         headers = {'Authorization': f'Bearer {access_token}'}
         
         # Compose return_url for auto-download
+        base_url = app.config['API_BASE_URL'].replace('/api', '')
         return_url = (
-            'http://127.0.0.1:5500/user/auto-download.html'
+            f'{base_url}/user/auto-download.html'
             f'?resource_id={resource_id}'
             f'&email={user_email}'
             f'&name={name}'
@@ -219,7 +220,7 @@ def pay():
             'currency': 'KES',
             'amount': amount,
             'description': f'Download: {resource.title}',
-            'callback_url': 'http://localhost:5000/api/pesapal-callback',
+            'callback_url': f"{app.config['API_BASE_URL']}/pesapal-callback",
             'notification_id': '',
             'billing_address': {
                 'email_address': user_email,
