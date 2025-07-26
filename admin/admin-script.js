@@ -2,7 +2,7 @@
 let API_BASE = '';
 
 function fetchApiBaseUrl() {
-    return fetch('/api/config')
+    return fetch('https://books-management-system-bcr5.onrender.com/api/config')
         .then(res => res.json())
         .then(cfg => {
             API_BASE = cfg.API_BASE_URL;
