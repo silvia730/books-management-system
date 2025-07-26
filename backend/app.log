@@ -1,0 +1,374 @@
+2025-07-26 15:14:46,742 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-07-26 15:14:46,742 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-26 15:14:46,785 - werkzeug - INFO -  * Restarting with stat
+2025-07-26 15:14:48,630 - werkzeug - WARNING -  * Debugger is active!
+2025-07-26 15:14:48,640 - werkzeug - INFO -  * Debugger PIN: 912-425-065
+2025-07-26 15:15:23,942 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:15:23,944 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:15:23] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:15:23,946 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:15:23,948 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:15:23] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:15:24,182 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:15:24,183 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:15:24] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:15:24,261 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:15:24,262 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:15:24] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:15:24,491 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:15:24,495 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:15:24] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:15:33,430 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:15:33,431 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:15:33] "[31m[1mOPTIONS /api/login HTTP/1.1[0m" 403 -
+2025-07-26 15:15:36,785 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:15:36,786 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:15:36] "[31m[1mOPTIONS /api/login HTTP/1.1[0m" 403 -
+2025-07-26 15:17:04,333 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:17:04,334 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:17:04] "[31m[1mOPTIONS /api/login HTTP/1.1[0m" 403 -
+2025-07-26 15:17:37,306 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-07-26 15:17:37,307 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-26 15:17:37,309 - werkzeug - INFO -  * Restarting with stat
+2025-07-26 15:17:39,173 - werkzeug - WARNING -  * Debugger is active!
+2025-07-26 15:17:39,183 - werkzeug - INFO -  * Debugger PIN: 912-425-065
+2025-07-26 15:18:12,382 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:12,384 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:12] "[31m[1mOPTIONS /api/login HTTP/1.1[0m" 403 -
+2025-07-26 15:18:50,794 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:50,797 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:50] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:51,126 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:51,128 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:51,130 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:51] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:51,135 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:51] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:51,455 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:51,465 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:51] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:51,863 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:51,865 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:51] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:51,876 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:51,879 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:51] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:52,078 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:52,079 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:52] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:52,201 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:52,203 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:52,207 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:52] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:52,210 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:52] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:52,387 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:52,388 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:52] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:52,625 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:52,626 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:52,626 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:52] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:52,627 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:52] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:52,693 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:52,695 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:52] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:52,932 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:52,933 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:52] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:53,015 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:53,017 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:53] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:53,237 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:53,239 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:53] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:53,320 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:53,321 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:53] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:53,325 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:53,326 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:53] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:53,635 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:53,670 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:53] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:53,708 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:53,709 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:53,710 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:53] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:53,711 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:53] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:53,976 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:53,977 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:53] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,022 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,023 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,138 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,139 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,142 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,143 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,282 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,283 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,448 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,449 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,523 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,524 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,527 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,528 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,612 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,613 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,836 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,838 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,915 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,916 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:54,921 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:54,922 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:54] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:55,237 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:55,237 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:55] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:55,306 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:55,307 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:55,308 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:55] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:55,309 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:55] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:55,543 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:55,543 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:55] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:55,615 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:55,616 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:55] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:55,698 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:55,699 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:55] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:55,702 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:55,703 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:55] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:55,849 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:55,850 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:55] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,059 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,101 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,114 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,117 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,128 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,144 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,155 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,157 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,457 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,458 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,542 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,543 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,543 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,544 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,766 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,767 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,860 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,863 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:56,972 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:56,973 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:56] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:57,062 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:57,064 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:57] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:57,072 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:57,072 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:57] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:57,365 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:57,367 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:57] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:57,371 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:57,372 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:57] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:57,741 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:57,744 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:57,745 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:57] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:57,749 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:57] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:57,990 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:57,991 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:57] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,064 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,066 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,138 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,139 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,142 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,143 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,296 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,297 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,448 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,449 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,523 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,524 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,528 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,530 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,633 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,635 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,844 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,846 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,946 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,948 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:58,951 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:58,952 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:58] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:59,258 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:59,261 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:59] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:59,480 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:59,481 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:59] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:18:59,486 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:59,489 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:59] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:59,632 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:59,634 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:59] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:18:59,808 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:18:59,816 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:18:59] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:00,822 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:00,823 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:00,825 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:00] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:00,826 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:00] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:01,132 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:01,133 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:01] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:01,454 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:01,456 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:01] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:01,777 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:01,781 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:01] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:01,928 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:01,929 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:01] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:02,230 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:02,232 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:02] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:02,235 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:02,236 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:02] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:02,551 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:02,552 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:02,553 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:02] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:02,554 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:02] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:02,557 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:02,558 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:02] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:02,866 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:02,869 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:02] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,119 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,121 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,176 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,177 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,243 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,244 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,247 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,249 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,425 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,426 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,558 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,562 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,639 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,640 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,643 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,644 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,731 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,732 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:03,960 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:03,962 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:03] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:04,026 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:04,028 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:04] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:04,033 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:04,044 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:04] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:04,058 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:04,072 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:04] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:04,516 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:04,517 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:04,518 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:04] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:04,518 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:04] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:04,723 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:04,725 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:04] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:04,827 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:04,829 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:04] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:05,042 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:05,043 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:05] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:05,182 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:05,184 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:05] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:05,278 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:05,279 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:05,280 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:05] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:05,282 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:05] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:05,348 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:05,349 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:05] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:05,485 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:05,486 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:05] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:05,772 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:05,773 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:05,774 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:05] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:05,775 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:05] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:05,778 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:05,789 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:05] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:06,123 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:06,124 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:06] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:06,348 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:06,349 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:06] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:06,426 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:06,428 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:06] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:06,438 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:06,439 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:06] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:06,822 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:06,824 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:06,826 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:06] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:06,829 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:06] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,072 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,074 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,350 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,351 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,352 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,354 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,379 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,380 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,577 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,578 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,581 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,582 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,665 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,667 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,690 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,692 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,967 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,969 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:07,972 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:07,973 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:07] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:08,282 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:08,283 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:08] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:08,370 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:08,372 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:08] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:08,375 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:08,376 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:08] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:08,588 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:08,589 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:08] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:08,682 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:08,683 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:08] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:08,759 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:08,760 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:08] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:08,764 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:08,765 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:08] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:08,895 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:08,896 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:08] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,075 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,076 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,153 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,154 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,158 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,160 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,275 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,277 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,485 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,486 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,579 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,580 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,583 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,584 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,737 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,738 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,741 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,742 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,888 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,889 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:09,891 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:09,895 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:09] "[31m[1mGET /api/users HTTP/1.1[0m" 403 -
+2025-07-26 15:19:10,204 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:10,207 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:10] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:19:10,213 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:19:10,237 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:19:10] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:51:15,823 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-07-26 15:51:15,824 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-26 15:51:15,826 - werkzeug - INFO -  * Restarting with stat
+2025-07-26 15:51:17,586 - werkzeug - WARNING -  * Debugger is active!
+2025-07-26 15:51:17,596 - werkzeug - INFO -  * Debugger PIN: 912-425-065
+2025-07-26 15:51:34,426 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:51:34,428 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:51:34] "[31m[1mOPTIONS /api/login HTTP/1.1[0m" 403 -
+2025-07-26 15:52:03,094 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:52:03,096 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:52:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:52:20,758 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:52:20,867 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:52:20] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:52:31,127 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:52:31,128 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:52:31] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:52:41,402 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:52:41,403 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:52:41] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:52:51,170 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:52:51,172 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:52:51] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:53:01,393 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:53:01,394 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:53:01] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:53:11,090 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:53:11,092 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:53:11] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:53:21,393 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:53:21,394 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:53:21] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:54:03,096 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:54:03,097 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:54:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:55:03,406 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:55:03,409 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:55:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:56:03,104 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:56:03,108 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:56:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:57:03,401 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:57:03,405 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:57:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:58:03,102 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:58:03,107 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:58:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 15:59:03,397 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 15:59:03,398 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 15:59:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 16:00:03,100 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 16:00:03,102 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 16:00:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 16:01:03,406 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 16:01:03,407 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 16:01:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 16:02:03,092 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 16:02:03,094 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 16:02:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 16:03:03,393 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 16:03:03,395 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 16:03:03] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -
+2025-07-26 16:03:50,238 - __main__ - WARNING - Unauthorized access attempt from host: localhost
+2025-07-26 16:03:50,240 - werkzeug - INFO - 127.0.0.1 - - [26/Jul/2025 16:03:50] "[31m[1mGET /api/resources HTTP/1.1[0m" 403 -

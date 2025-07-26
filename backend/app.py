@@ -75,6 +75,10 @@ def get_pesapal_token():
         raise Exception("Failed to authenticate with PesaPal")
     return auth_resp.json().get('token')
 
+@app.route('/')
+def index():
+    return "Welcome to the Books Management System API!"
+
 @app.route('/api/upload', methods=['POST'])
 def upload_resource():
     resource_type = request.form.get('resourceType')
@@ -221,7 +225,7 @@ def pay():
             'amount': amount,
             'description': f'Download: {resource.title}',
             'callback_url': f"{app.config['API_BASE_URL']}/pesapal-callback",
-            'notification_id': '',
+            'notification_id': app.config['PESAPAL_NOTIFICATION_ID'],
             'billing_address': {
                 'email_address': user_email,
                 'phone_number': phone,
