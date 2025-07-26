@@ -12,6 +12,21 @@ function isNullOrEmpty(val) {
 // Add these at the top of the file, outside any function:
 let currentDownloadResourceId = null;
 let downloadFormData = null;
+let API_BASE = '';
+
+function fetchApiBaseUrl() {
+    return fetch('/api/config')
+        .then(res => res.json())
+        .then(cfg => {
+            API_BASE = cfg.API_BASE_URL;
+            console.log('API Base URL loaded:', API_BASE);
+        })
+        .catch(error => {
+            console.error('Failed to load API config:', error);
+            // Fallback to localhost for development
+            API_BASE = 'http://localhost:5000/api';
+        });
+}
 
 // Add this function near the top
 function resetDownloadState() {
@@ -33,14 +48,20 @@ function resetDownloadState() {
 // Replace resources object and all renderGeneralResources calls with API fetches
 // Example for books:
 function fetchAndRenderResources() {
-    fetch('http://localhost:5000/api/resources')
+    if (!API_BASE) {
+        console.warn('API_BASE not loaded yet, skipping resource fetch');
+        return;
+    }
+    
+    fetch(`${API_BASE}/resources`)
         .then(res => res.json())
         .then(data => {
             renderGeneralResources('.books-section', data.books, 'general');
             renderGeneralResources('#papers', data.papers, 'paper');
             renderGeneralResources('#setbooks', data.setbooks, 'setbook');
         })
-        .catch(() => {
+        .catch((error) => {
+            console.error('Failed to fetch resources:', error);
             renderGeneralResources('.books-section', [], 'general');
             renderGeneralResources('#papers', [], 'paper');
             renderGeneralResources('#setbooks', [], 'setbook');
@@ -151,7 +172,12 @@ function renderGeneralResources(sectionSelector, items, type) {
         card.className = `book-card ${type}`;
         card.setAttribute('data-id', item.id || '');
         // Use a default image if cover is missing/null
-        const coverUrl = item.cover && item.cover !== 'null' ? item.cover : 'assets/placeholder.jpg';
+        let coverUrl = item.cover && item.cover !== 'null' ? item.cover : 'assets/placeholder.jpg';
+        if (item.cover && item.cover.startsWith('static/covers/')) {
+            // Use the base URL without /api for static files
+            const baseUrl = API_BASE.replace('/api', '');
+            coverUrl = `${baseUrl}/${item.cover}`;
+        }
         if (!item.cover || item.cover === 'null') {
             console.warn('Resource with missing cover:', item);
         }
@@ -212,7 +238,7 @@ function renderGeneralResources(sectionSelector, items, type) {
             downloadForm.style.display = 'none';
             // Automatically trigger payment
             if (!isNullOrEmpty(currentDownloadResourceId) && downloadFormData) {
-                fetch('http://localhost:5000/api/pay', {
+                fetch(`${API_BASE}/pay`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -237,7 +263,8 @@ function renderGeneralResources(sectionSelector, items, type) {
                         document.getElementById('download-modal-message').textContent = data.error || 'Failed to initiate payment.';
                     }
                 })
-                .catch(() => {
+                .catch((error) => {
+                    console.error('Payment API error:', error);
                     document.getElementById('download-modal-message').textContent = 'Failed to connect to payment API.';
                 });
             }
@@ -249,7 +276,7 @@ function renderGeneralResources(sectionSelector, items, type) {
                 console.error('Download attempted with:', currentDownloadResourceId, downloadFormData);
                 return;
             }
-            fetch('http://localhost:5000/api/pay', {
+            fetch(`${API_BASE}/pay`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -273,29 +300,12 @@ function renderGeneralResources(sectionSelector, items, type) {
                     document.getElementById('download-modal-message').textContent = data.error || 'Failed to initiate payment.';
                 }
             })
-            .catch(() => {
+            .catch((error) => {
+                console.error('Payment API error:', error);
                 document.getElementById('download-modal-message').textContent = 'Failed to connect to payment API.';
             });
         };
     }
-}
-
-// Initial render for general resources
-// Replace resources object and all renderGeneralResources calls with API fetches
-// Example for books:
-function fetchAndRenderResources() {
-    fetch('http://localhost:5000/api/resources')
-        .then(res => res.json())
-        .then(data => {
-            renderGeneralResources('.books-section', data.books, 'general');
-            renderGeneralResources('#papers', data.papers, 'paper');
-            renderGeneralResources('#setbooks', data.setbooks, 'setbook');
-        })
-        .catch(() => {
-            renderGeneralResources('.books-section', [], 'general');
-            renderGeneralResources('#papers', [], 'paper');
-            renderGeneralResources('#setbooks', [], 'setbook');
-        });
 }
 
 // Modal open/close helpers
@@ -322,7 +332,7 @@ if (typeof document !== 'undefined') {
 }
 
 // Initialize the slider when the page loads
-document.addEventListener('DOMContentLoaded', function() {
+function mainAppInit() {
     const signinModal = document.getElementById('signin-modal');
     const registerModal = document.getElementById('register-modal');
     initRevisionSlider();
@@ -380,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = e.target;
         const username = form.querySelector('input[type="text"]').value;
         const password = form.querySelector('input[type="password"]').value;
-        fetch('http://localhost:5000/api/login', {
+        fetch(`${API_BASE}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -394,7 +404,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(data.error || 'Sign in failed');
             }
         })
-        .catch(() => alert('Failed to connect to backend API.'));
+        .catch((error) => {
+            console.error('Login API error:', error);
+            alert('Failed to connect to backend API.');
+        });
     };
     document.getElementById('register-form').onsubmit = function(e) {
             e.preventDefault();
@@ -402,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const username = form.querySelector('input[type="text"]').value;
         const email = form.querySelector('input[type="email"]').value;
         const password = form.querySelector('input[type="password"]').value;
-        fetch('http://localhost:5000/api/register', {
+        fetch(`${API_BASE}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, email, password })
@@ -416,7 +429,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(data.error || 'Registration failed');
             }
         })
-        .catch(() => alert('Failed to connect to backend API.'));
+        .catch((error) => {
+            console.error('Register API error:', error);
+            alert('Failed to connect to backend API.');
+        });
     };
     
     // Smooth scrolling for anchor links (About, Contact, etc.)
@@ -456,4 +472,8 @@ document.addEventListener('DOMContentLoaded', function() {
             contactForm.reset();
         };
     }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetchApiBaseUrl().then(mainAppInit);
 });

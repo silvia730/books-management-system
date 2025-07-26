@@ -1,21 +1,54 @@
 // --- DASHBOARD STATS & SIDEBAR LOGIC ---
+let API_BASE = '';
+
+function fetchApiBaseUrl() {
+    return fetch('/api/config')
+        .then(res => res.json())
+        .then(cfg => {
+            API_BASE = cfg.API_BASE_URL;
+            console.log('Admin API Base URL loaded:', API_BASE);
+        })
+        .catch(error => {
+            console.error('Failed to load API config:', error);
+            // Fallback to localhost for development
+            API_BASE = 'http://localhost:5000/api';
+        });
+}
+
 function fetchAndUpdateStats() {
-    fetch('http://localhost:5000/api/resources')
+    if (!API_BASE) {
+        console.warn('API_BASE not loaded yet, skipping stats fetch');
+        return;
+    }
+    
+    fetch(`${API_BASE}/resources`)
         .then(res => res.json())
         .then(data => {
             document.getElementById('stat-books').textContent = data.books.length;
             document.getElementById('stat-papers').textContent = data.papers.length;
             document.getElementById('stat-setbooks').textContent = data.setbooks.length;
+        })
+        .catch(error => {
+            console.error('Failed to fetch stats:', error);
         });
-    fetch('http://localhost:5000/api/users')
+        
+    fetch(`${API_BASE}/users`)
         .then(res => res.json())
         .then(data => {
             document.getElementById('stat-users').textContent = data.count;
+        })
+        .catch(error => {
+            console.error('Failed to fetch user count:', error);
         });
 }
 
 function fetchAndRenderList(type, containerId) {
-    fetch('http://localhost:5000/api/resources')
+    if (!API_BASE) {
+        console.warn('API_BASE not loaded yet, skipping list fetch');
+        return;
+    }
+    
+    fetch(`${API_BASE}/resources`)
         .then(res => res.json())
         .then(data => {
             const list = data[type];
@@ -27,7 +60,7 @@ function fetchAndRenderList(type, containerId) {
             }
             container.innerHTML = list.map(item => `
                 <div class="admin-list-item" style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
-                    ${item.cover ? `<img src="data:image/*;base64,${item.cover}" alt="Cover" style="width:60px;height:80px;object-fit:cover;border-radius:6px;">` : ''}
+                    ${item.cover ? `<img src="${API_BASE.replace('/api', '')}/${item.cover}" alt="Cover" style="width:60px;height:80px;object-fit:cover;border-radius:6px;">` : ''}
                     <div style="flex:1;">
                         <strong>${item.title}</strong> (${item.class_grade} - ${item.subject})<br>
                         <span>${item.description}</span>
@@ -40,7 +73,7 @@ function fetchAndRenderList(type, containerId) {
                 btn.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
                     if (confirm('Are you sure you want to delete this resource?')) {
-                        fetch(`http://localhost:5000/api/resource/${id}`, {
+                        fetch(`${API_BASE}/resource/${id}`, {
                             method: 'DELETE'
                         })
                         .then(res => res.json())
@@ -52,14 +85,24 @@ function fetchAndRenderList(type, containerId) {
                                 alert(data.error || 'Delete failed.');
                             }
                         })
-                        .catch(() => alert('Failed to connect to backend API.'));
+                        .catch((error) => {
+                            console.error('Delete API error:', error);
+                            alert('Failed to connect to backend API.');
+                        });
                     }
                 });
             });
+        })
+        .catch((error) => {
+            console.error('Failed to fetch resources:', error);
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = '<div style="color:#888;">Failed to load resources.</div>';
+            }
         });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function mainAdminInit() {
     // Subjects by class/grade
     const subjects = {
         // KCPE
@@ -171,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Send to backend API
-            fetch('http://localhost:5000/api/upload', {
+            fetch(`${API_BASE}/upload`, {
                 method: 'POST',
                 body: formData
             })
@@ -197,7 +240,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Upload failed: ' + (data.error || 'Unknown error'));
                 }
             })
-            .catch(() => alert('Failed to connect to backend API.'));
+            .catch((error) => {
+                console.error('Upload API error:', error);
+                alert('Failed to connect to backend API.');
+            });
         });
     }
 
@@ -214,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = adminLoginForm.querySelector('input[type="password"]').value;
             const errorDiv = document.getElementById('login-error');
             errorDiv.textContent = '';
-            fetch('http://localhost:5000/api/login', {
+            fetch(`${API_BASE}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -228,7 +274,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     errorDiv.textContent = data.error || 'Login failed';
                 }
             })
-            .catch(() => {
+            .catch((error) => {
+                console.error('Login API error:', error);
                 errorDiv.textContent = 'Failed to connect to backend API.';
             });
         };
@@ -293,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const newPassword = document.getElementById('new-password').value;
             const msgDiv = document.getElementById('settings-message');
             msgDiv.textContent = '';
-            fetch('http://localhost:5000/api/change_password', {
+            fetch(`${API_BASE}/change_password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -313,7 +360,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     msgDiv.style.color = '#B22222';
                 }
             })
-            .catch(() => {
+            .catch((error) => {
+                console.error('Change password API error:', error);
                 msgDiv.textContent = 'Failed to connect to backend API.';
                 msgDiv.style.color = '#B22222';
             });
@@ -356,4 +404,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetchApiBaseUrl().then(mainAdminInit);
 });
