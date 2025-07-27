@@ -399,6 +399,23 @@ def download_resource(resource_id):
 def get_config():
     return jsonify({'API_BASE_URL': f"{app.config['API_BASE_URL']}/api"})
 
+@app.route('/api/test-db', methods=['GET'])
+def test_database():
+    """Test database connection"""
+    try:
+        # Try to query the database
+        user_count = User.query.count()
+        return jsonify({
+            'status': 'success',
+            'message': 'Database connection working',
+            'user_count': user_count
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': f'Database connection failed: {str(e)}'
+        }), 500
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
