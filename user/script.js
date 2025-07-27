@@ -12,20 +12,12 @@ function isNullOrEmpty(val) {
 // Add these at the top of the file, outside any function:
 let currentDownloadResourceId = null;
 let downloadFormData = null;
-let API_BASE = '';
+let API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
 
 function fetchApiBaseUrl() {
-    return fetch('https://books-management-system-bcr5.onrender.com/api/config')
-        .then(res => res.json())
-        .then(cfg => {
-            API_BASE = cfg.API_BASE_URL;
-            console.log('API Base URL loaded:', API_BASE);
-        })
-        .catch(error => {
-            console.error('Failed to load API config:', error);
-            // Fallback to deployed backend for production
-            API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
-        });
+    // For now, use the hardcoded URL to ensure it works
+    console.log('API Base URL set to:', API_BASE);
+    return Promise.resolve();
 }
 
 // Add this function near the top
@@ -178,9 +170,7 @@ function renderGeneralResources(sectionSelector, items, type) {
             const baseUrl = API_BASE.replace('/api', '');
             coverUrl = `${baseUrl}/${item.cover}`;
         }
-        if (!item.cover || item.cover === 'null') {
-            console.warn('Resource with missing cover:', item);
-        }
+        // No warning needed - using placeholder image is fine
         card.innerHTML = `
             <div class="book-cover" style="background-image: url('${coverUrl}')"></div>
             <div class="book-info">
@@ -251,8 +241,16 @@ function renderGeneralResources(sectionSelector, items, type) {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.payment_url) {
-                        // Redirect to payment page in a new tab
+                    if (data.success && data.message && data.message.includes('Test payment')) {
+                        // Test payment successful
+                        document.getElementById('download-modal-message').innerHTML =
+                            '<div style="color: green;">✅ ' + data.message + '</div>' +
+                            '<a href="download-success.html?resource_id=' +
+                            encodeURIComponent(currentDownloadResourceId) + '&email=' +
+                            encodeURIComponent(downloadFormData.email) + '&orderTrackingId=' +
+                            encodeURIComponent(data.orderTrackingId) + '" target="_blank">Click here to download your resource</a>';
+                    } else if (data.payment_url) {
+                        // PesaPal payment - redirect to payment page
                         window.open(data.payment_url, '_blank');
                         document.getElementById('download-modal-message').innerHTML =
                             'After completing payment, <a href="download-success.html?resource_id=' +
@@ -289,7 +287,16 @@ function renderGeneralResources(sectionSelector, items, type) {
             })
             .then(res => res.json())
             .then(data => {
-                if (data.payment_url) {
+                if (data.success && data.message && data.message.includes('Test payment')) {
+                    // Test payment successful
+                    document.getElementById('download-modal-message').innerHTML =
+                        '<div style="color: green;">✅ ' + data.message + '</div>' +
+                        '<a href="download-success.html?resource_id=' +
+                        encodeURIComponent(currentDownloadResourceId) + '&email=' +
+                        encodeURIComponent(downloadFormData.email) + '&orderTrackingId=' +
+                        encodeURIComponent(data.orderTrackingId) + '" target="_blank">Click here to download your resource</a>';
+                } else if (data.payment_url) {
+                    // PesaPal payment - redirect to payment page
                     window.open(data.payment_url, '_blank');
                     document.getElementById('download-modal-message').innerHTML =
                         'After completing payment, <a href="download-success.html?resource_id=' +

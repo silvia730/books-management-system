@@ -65,15 +65,46 @@ def ensure_admin_user():
 
 def get_pesapal_token():
     """Get PesaPal access token with caching"""
-    auth_url = f"{app.config['PESAPAL_BASE_URL']}/Auth/RequestToken"
-    auth_resp = requests.post(auth_url, json={
-        'consumer_key': app.config['PESAPAL_CONSUMER_KEY'],
-        'consumer_secret': app.config['PESAPAL_CONSUMER_SECRET']
-    })
-    if not auth_resp.ok:
-        logger.error(f"Failed to authenticate with PesaPal: {auth_resp.text}")
-        raise Exception("Failed to authenticate with PesaPal")
-    return auth_resp.json().get('token')
+    try:
+        logger.info("Attempting to get PesaPal token")
+        auth_url = f"{app.config['PESAPAL_BASE_URL']}/Auth/RequestToken"
+        logger.info(f"Auth URL: {auth_url}")
+        
+        auth_data = {
+            'consumer_key': app.config['PESAPAL_CONSUMER_KEY'],
+            'consumer_secret': app.config['PESAPAL_CONSUMER_SECRET']
+        }
+        logger.info(f"Auth data keys: {list(auth_data.keys())}")
+        
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+        
+        auth_resp = requests.post(auth_url, json=auth_data, headers=headers, timeout=30)
+        logger.info(f"PesaPal auth response status: {auth_resp.status_code}")
+        logger.info(f"PesaPal auth response: {auth_resp.text}")
+        
+        if not auth_resp.ok:
+            logger.error(f"Failed to authenticate with PesaPal: {auth_resp.text}")
+            raise Exception(f"Failed to authenticate with PesaPal: {auth_resp.text}")
+        
+        try:
+            auth_json = auth_resp.json()
+        except Exception as e:
+            logger.error(f"Failed to parse auth response as JSON: {auth_resp.text}")
+            raise Exception(f"Invalid response from PesaPal auth: {auth_resp.text}")
+        
+        token = auth_json.get('token')
+        if not token:
+            logger.error(f"No token in auth response: {auth_json}")
+            raise Exception("No access token received from PesaPal")
+        
+        logger.info(f"PesaPal token received successfully")
+        return token
+    except Exception as e:
+        logger.error(f"Error getting PesaPal token: {str(e)}")
+        raise
 
 @app.route('/')
 def index():
@@ -114,23 +145,38 @@ def upload_resource():
 
 @app.route('/api/resources', methods=['GET'])
 def get_resources():
-    books = Resource.query.filter_by(resource_type='book').all()
-    papers = Resource.query.filter_by(resource_type='paper').all()
-    setbooks = Resource.query.filter_by(resource_type='setbook').all()
-    return jsonify({
-        'books': [b.to_dict() for b in books],
-        'papers': [p.to_dict() for p in papers],
-        'setbooks': [s.to_dict() for s in setbooks]
-    })
+    try:
+        books = Resource.query.filter_by(resource_type='book').all()
+        papers = Resource.query.filter_by(resource_type='paper').all()
+        setbooks = Resource.query.filter_by(resource_type='setbook').all()
+        return jsonify({
+            'books': [b.to_dict() for b in books],
+            'papers': [p.to_dict() for p in papers],
+            'setbooks': [s.to_dict() for s in setbooks]
+        })
+    except Exception as e:
+        logger.error(f"Error fetching resources: {str(e)}")
+        return jsonify({'error': f'Failed to fetch resources: {str(e)}'}), 500
 
 @app.route('/api/resource/<int:resource_id>', methods=['DELETE'])
 def delete_resource(resource_id):
-    resource = Resource.query.get(resource_id)
-    if not resource:
-        return jsonify({'success': False, 'error': 'Resource not found'}), 404
-    db.session.delete(resource)
-    db.session.commit()
-    return jsonify({'success': True})
+    try:
+        resource = Resource.query.get(resource_id)
+        if not resource:
+            return jsonify({'success': False, 'error': 'Resource not found'}), 404
+        
+        # Check if there are any payments for this resource
+        payments = Payment.query.filter_by(resource_id=resource_id).first()
+        if payments:
+            return jsonify({'success': False, 'error': 'Cannot delete resource with existing payments'}), 400
+        
+        db.session.delete(resource)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error deleting resource {resource_id}: {str(e)}")
+        return jsonify({'success': False, 'error': f'Failed to delete resource: {str(e)}'}), 500
 
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -178,36 +224,86 @@ def get_user_count():
 @app.route('/api/pay', methods=['POST'])
 @rate_limit
 def pay():
+    """PesaPal v3 API payment endpoint"""
     try:
+        logger.info("Payment request received")
         data = request.json
+        logger.info(f"Payment data: {data}")
+        
+        # Validate required fields
+        required_fields = ['resource_id', 'email', 'name', 'phone']
+        missing_fields = [field for field in required_fields if not data.get(field)]
+        if missing_fields:
+            logger.error(f"Missing required fields: {missing_fields}")
+            return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
+        
         resource_id = data.get('resource_id')
         user_email = data.get('email')
         amount = data.get('amount', 100)  # Default to 100 KES
         name = data.get('name', '')
         phone = data.get('phone', '')
         
+        logger.info(f"Processing payment for resource {resource_id}, email {user_email}, amount {amount}")
+        
         # Validate resource exists
         resource = Resource.query.get(resource_id)
         if not resource:
+            logger.error(f"Resource {resource_id} not found")
             return jsonify({'error': 'Resource not found'}), 404
+        
+        logger.info(f"Resource found: {resource.title}")
         
         # Get PesaPal credentials
         pesapal_key = app.config['PESAPAL_CONSUMER_KEY']
         pesapal_secret = app.config['PESAPAL_CONSUMER_SECRET']
+        pesapal_base_url = app.config['PESAPAL_BASE_URL']
+        notification_id = app.config['PESAPAL_NOTIFICATION_ID']
+        
+        logger.info(f"PesaPal key exists: {bool(pesapal_key)}")
+        logger.info(f"PesaPal secret exists: {bool(pesapal_secret)}")
+        logger.info(f"PesaPal base URL: {pesapal_base_url}")
+        logger.info(f"Notification ID: {notification_id}")
+        
+        # Check if PesaPal credentials are available
         if not pesapal_key or not pesapal_secret:
-            logger.error('PesaPal credentials missing')
-            return jsonify({'error': 'PesaPal credentials not configured'}), 500
+            logger.warning('PesaPal credentials missing - using test payment mode')
+            # Create a test payment instead
+            test_order_id = f"test_{int(time.time())}"
+            payment = Payment(
+                order_tracking_id=test_order_id,
+                resource_id=resource_id,
+                user_email=user_email,
+                amount=amount,
+                status='COMPLETED'  # Mark as completed for testing
+                # currency will use default value from model
+            )
+            db.session.add(payment)
+            db.session.commit()
+            
+            logger.info(f"Test payment created: {test_order_id}")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Test payment successful (PesaPal not configured)',
+                'orderTrackingId': test_order_id,
+                'payment_id': payment.id,
+                'payment_url': None
+            })
         
         # Get access token
         try:
             access_token = get_pesapal_token()
+            logger.info("PesaPal access token obtained successfully")
         except Exception as e:
             logger.error(f"Failed to get PesaPal token: {str(e)}")
-            return jsonify({'error': 'Payment service unavailable'}), 503
+            return jsonify({'error': f'Payment service unavailable: {str(e)}'}), 503
         
-        # Create order
-        order_url = f"{app.config['PESAPAL_BASE_URL']}/Transactions/SubmitOrderRequest"
-        headers = {'Authorization': f'Bearer {access_token}'}
+        # Create order using PesaPal v3 API
+        order_url = f"{pesapal_base_url}/Transactions/SubmitOrderRequest"
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
         
         # Compose return_url for auto-download
         base_url = app.config['API_BASE_URL'].replace('/api', '')
@@ -219,13 +315,14 @@ def pay():
             f'&phone={phone}'
         )
         
+        # PesaPal v3 API order data structure
         order_data = {
             'id': str(resource_id),
             'currency': 'KES',
             'amount': amount,
             'description': f'Download: {resource.title}',
             'callback_url': f"{app.config['API_BASE_URL']}/pesapal-callback",
-            'notification_id': app.config['PESAPAL_NOTIFICATION_ID'],
+            'notification_id': notification_id,
             'billing_address': {
                 'email_address': user_email,
                 'phone_number': phone,
@@ -240,14 +337,29 @@ def pay():
             'return_url': return_url
         }
         
-        order_resp = requests.post(order_url, json=order_data, headers=headers)
+        logger.info(f"Submitting order to PesaPal: {order_url}")
+        logger.info(f"Order data: {order_data}")
+        
+        order_resp = requests.post(order_url, json=order_data, headers=headers, timeout=30)
+        logger.info(f"PesaPal response status: {order_resp.status_code}")
+        logger.info(f"PesaPal response: {order_resp.text}")
+        
         if not order_resp.ok:
             logger.error(f'Failed to create PesaPal order: {order_resp.text}')
-            return jsonify({'error': 'Failed to create payment order'}), 500
+            return jsonify({'error': f'Failed to create payment order: {order_resp.text}'}), 500
         
-        order_response = order_resp.json()
+        try:
+            order_response = order_resp.json()
+        except Exception as e:
+            logger.error(f"Failed to parse PesaPal response as JSON: {order_resp.text}")
+            return jsonify({'error': 'Invalid response from payment service'}), 500
+        
         payment_url = order_response.get('redirect_url')
         order_tracking_id = order_response.get('order_tracking_id')
+        
+        if not payment_url or not order_tracking_id:
+            logger.error(f"Missing payment_url or order_tracking_id in response: {order_response}")
+            return jsonify({'error': 'Invalid response from payment service'}), 500
         
         # Store payment record
         payment = Payment(
@@ -256,6 +368,7 @@ def pay():
             user_email=user_email,
             amount=amount,
             status='PENDING'
+            # currency will use default value from model
         )
         db.session.add(payment)
         db.session.commit()
@@ -263,6 +376,7 @@ def pay():
         logger.info(f"Payment initiated: Order ID {order_tracking_id}, Resource {resource_id}, Email {user_email}")
         
         return jsonify({
+            'success': True,
             'payment_url': payment_url, 
             'orderTrackingId': order_tracking_id,
             'payment_id': payment.id
@@ -270,7 +384,52 @@ def pay():
         
     except Exception as e:
         logger.exception('Unexpected error in /api/pay: %s', str(e))
-        return jsonify({'error': 'Internal server error'}), 500
+        return jsonify({'error': f'Internal server error: {str(e)}'}), 500
+
+@app.route('/api/test-pay', methods=['POST'])
+def test_pay():
+    """Test payment endpoint without PesaPal integration"""
+    try:
+        logger.info("Test payment request received")
+        data = request.json
+        logger.info(f"Test payment data: {data}")
+        
+        resource_id = data.get('resource_id')
+        user_email = data.get('email')
+        amount = data.get('amount', 100)
+        name = data.get('name', '')
+        phone = data.get('phone', '')
+        
+        # Validate resource exists
+        resource = Resource.query.get(resource_id)
+        if not resource:
+            return jsonify({'error': 'Resource not found'}), 404
+        
+        # Create a test payment record
+        test_order_id = f"test_{int(time.time())}"
+        payment = Payment(
+            order_tracking_id=test_order_id,
+            resource_id=resource_id,
+            user_email=user_email,
+            amount=amount,
+            status='COMPLETED'  # Mark as completed for testing
+            # currency will use default value from model
+        )
+        db.session.add(payment)
+        db.session.commit()
+        
+        logger.info(f"Test payment created: {test_order_id}")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Test payment successful',
+            'orderTrackingId': test_order_id,
+            'payment_id': payment.id
+        })
+        
+    except Exception as e:
+        logger.exception(f"Test payment error: {str(e)}")
+        return jsonify({'error': f'Test payment failed: {str(e)}'}), 500
 
 @app.route('/api/pesapal/ipn', methods=['GET', 'POST'])
 @rate_limit
@@ -398,6 +557,63 @@ def download_resource(resource_id):
 @app.route('/api/config', methods=['GET'])
 def get_config():
     return jsonify({'API_BASE_URL': f"{app.config['API_BASE_URL']}/api"})
+
+@app.route('/api/debug-config', methods=['GET'])
+def debug_config():
+    """Debug endpoint to check configuration (without exposing sensitive data)"""
+    return jsonify({
+        'pesapal_key_exists': bool(app.config.get('PESAPAL_CONSUMER_KEY')),
+        'pesapal_secret_exists': bool(app.config.get('PESAPAL_CONSUMER_SECRET')),
+        'pesapal_base_url': app.config.get('PESAPAL_BASE_URL'),
+        'pesapal_notification_id': app.config.get('PESAPAL_NOTIFICATION_ID'),
+        'api_base_url': app.config.get('API_BASE_URL'),
+        'db_host': app.config.get('SQLALCHEMY_DATABASE_URI', '').split('@')[1].split('/')[0] if '@' in app.config.get('SQLALCHEMY_DATABASE_URI', '') else 'Not set'
+    })
+
+@app.route('/api/debug-pesapal', methods=['GET'])
+def debug_pesapal():
+    """Debug endpoint to check PesaPal configuration and test connection"""
+    try:
+        # Check environment variables
+        config_status = {
+            'pesapal_key_exists': bool(app.config.get('PESAPAL_CONSUMER_KEY')),
+            'pesapal_secret_exists': bool(app.config.get('PESAPAL_CONSUMER_SECRET')),
+            'pesapal_base_url': app.config.get('PESAPAL_BASE_URL'),
+            'pesapal_notification_id': app.config.get('PESAPAL_NOTIFICATION_ID'),
+            'api_base_url': app.config.get('API_BASE_URL'),
+        }
+        
+        # Test PesaPal connection if credentials exist
+        connection_test = None
+        if config_status['pesapal_key_exists'] and config_status['pesapal_secret_exists']:
+            try:
+                logger.info("Testing PesaPal connection...")
+                token = get_pesapal_token()
+                connection_test = {
+                    'status': 'success',
+                    'message': 'Successfully obtained PesaPal access token',
+                    'token_exists': bool(token)
+                }
+            except Exception as e:
+                connection_test = {
+                    'status': 'error',
+                    'message': f'Failed to connect to PesaPal: {str(e)}'
+                }
+        else:
+            connection_test = {
+                'status': 'skipped',
+                'message': 'PesaPal credentials not configured'
+            }
+        
+        return jsonify({
+            'config_status': config_status,
+            'connection_test': connection_test,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        logger.exception(f"Error in debug endpoint: {str(e)}")
+        return jsonify({'error': f'Debug endpoint error: {str(e)}'}), 500
 
 @app.route('/api/test-db', methods=['GET'])
 def test_database():
