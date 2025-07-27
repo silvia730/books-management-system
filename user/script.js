@@ -15,7 +15,7 @@ let downloadFormData = null;
 let API_BASE = '';
 
 function fetchApiBaseUrl() {
-    return fetch('/api/config')
+    return fetch('https://books-management-system-bcr5.onrender.com/api/config')
         .then(res => res.json())
         .then(cfg => {
             API_BASE = cfg.API_BASE_URL;
@@ -23,8 +23,8 @@ function fetchApiBaseUrl() {
         })
         .catch(error => {
             console.error('Failed to load API config:', error);
-            // Fallback to localhost for development
-            API_BASE = 'http://localhost:5000/api';
+            // Fallback to deployed backend for production
+            API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
         });
 }
 
