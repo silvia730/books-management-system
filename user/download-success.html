@@ -22,7 +22,7 @@
     const email = getQueryParam('email');
     const orderTrackingId = getQueryParam('orderTrackingId');
     if (resourceId && email && orderTrackingId) {
-        fetch(`http://localhost:5000/api/download/${resourceId}?email=${encodeURIComponent(email)}&orderTrackingId=${encodeURIComponent(orderTrackingId)}`)
+        fetch(`https://books-management-system-bcr5.onrender.com/api/download/${resourceId}?email=${encodeURIComponent(email)}&orderTrackingId=${encodeURIComponent(orderTrackingId)}`)
             .then(res => {
                 if (res.status === 200) {
                     return res.blob();

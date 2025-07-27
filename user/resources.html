@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SomaFy - Learning Resources</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .resources-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .resources-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .filter-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .resource-cover {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            background-color: #f0f0f0;
+            position: relative;
+        }
+        
+        .resource-info {
+            padding: 1.5rem;
+        }
+        
+        .resource-type {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .resource-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .download-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+        
+        .download-btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .no-resources {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 6px;
+        }
+        
+        .message.error {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+        
+        .message.success {
+            background: #efe;
+            color: #363;
+            border: 1px solid #cfc;
+        }
+        
+        .message.info {
+            background: #eef;
+            color: #336;
+            border: 1px solid #ccf;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="assets/somafy logo.jpg" alt="SomaFy Logo">
+                <span>SomaFy</span>
+            </div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="index.html#papers">Papers</a>
+                <a href="index.html#setbooks">Setbooks</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-outline" onclick="openModal(document.getElementById('signin-modal'))">
+                    <i class="fas fa-user"></i> Sign In
+                </button>
+                <button class="btn btn-primary" onclick="openModal(document.getElementById('register-modal'))">
+                    Register
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Resources Header -->
+    <section class="resources-header">
+        <div class="resources-container">
+            <h1>Learning Resources</h1>
+            <div class="filter-info" id="filter-info">
+                <p>Loading...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Content -->
+    <section class="resources-container">
+        <a href="index.html" class="back-btn">← Back to Home</a>
+        
+        <div id="resources-content">
+            <div class="loading">Loading resources...</div>
+        </div>
+    </section>
+
+    <!-- Download Modal -->
+    <div id="download-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal="download-modal">&times;</span>
+            <h2>Download Resource</h2>
+            <form id="download-form">
+                <div class="form-group">
+                    <label for="download-name">Full Name</label>
+                    <input type="text" id="download-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="download-email">Email</label>
+                    <input type="email" id="download-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="download-phone">Phone Number</label>
+                    <input type="tel" id="download-phone" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Pay with PesaPal</button>
+            </form>
+            <div id="download-modal-message"></div>
+            <button id="download-pesapal-btn" class="btn btn-primary" style="display: none;">Pay with PesaPal</button>
+        </div>
+    </div>
+
+    <!-- Sign In Modal -->
+    <div id="signin-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal="signin-modal">&times;</span>
+            <h2>Sign In</h2>
+            <form id="signin-form">
+                <div class="form-group">
+                    <label for="signin-username">Username</label>
+                    <input type="text" id="signin-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="signin-password">Password</label>
+                    <input type="password" id="signin-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal="register-modal">&times;</span>
+            <h2>Register</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="resources.js"></script>
+</body>
+</html> 

@@ -13,6 +13,7 @@ function isNullOrEmpty(val) {
 let currentDownloadResourceId = null;
 let downloadFormData = null;
 let API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
+let currentUser = null; // Add user authentication state
 
 function fetchApiBaseUrl() {
     // For now, use the hardcoded URL to ensure it works
@@ -342,6 +343,10 @@ if (typeof document !== 'undefined') {
 function mainAppInit() {
     const signinModal = document.getElementById('signin-modal');
     const registerModal = document.getElementById('register-modal');
+    
+    // Check for existing user session
+    checkUserAuth();
+    
     initRevisionSlider();
     fetchAndRenderResources();
     setInterval(fetchAndRenderResources, 10000); // Auto-refresh every 10 seconds
@@ -387,11 +392,11 @@ function mainAppInit() {
             return;
         }
         
-        // Redirect to subject.html with query params
-        window.location.href = `subject.html?class=${encodeURIComponent(selectedClass)}&subject=${encodeURIComponent(selectedSubject)}`;
+        // Redirect to resources.html with query params
+        window.location.href = `resources.html?class=${encodeURIComponent(selectedClass)}&subject=${encodeURIComponent(selectedSubject)}`;
     });
 
-    // Prevent form submission (demo only)
+    // Enhanced user authentication
     document.getElementById('signin-form').onsubmit = function(e) {
         e.preventDefault();
         const form = e.target;
@@ -405,8 +410,11 @@ function mainAppInit() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert('Sign in successful!');
+                currentUser = data.user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                updateAuthUI();
                 closeModal(signinModal);
+                alert('Sign in successful!');
             } else {
                 alert(data.error || 'Sign in failed');
             }
@@ -416,8 +424,9 @@ function mainAppInit() {
             alert('Failed to connect to backend API.');
         });
     };
+    
     document.getElementById('register-form').onsubmit = function(e) {
-            e.preventDefault();
+        e.preventDefault();
         const form = e.target;
         const username = form.querySelector('input[type="text"]').value;
         const email = form.querySelector('input[type="email"]').value;
@@ -432,6 +441,8 @@ function mainAppInit() {
             if (data.success) {
                 alert('Registration successful! You can now sign in.');
                 closeModal(registerModal);
+                // Switch to sign in modal
+                openModal(signinModal);
             } else {
                 alert(data.error || 'Registration failed');
             }
@@ -479,6 +490,48 @@ function mainAppInit() {
             contactForm.reset();
         };
     }
+}
+
+// Authentication helper functions
+function checkUserAuth() {
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            updateAuthUI();
+        } catch (error) {
+            console.error('Error parsing saved user:', error);
+            localStorage.removeItem('currentUser');
+        }
+    }
+}
+
+function updateAuthUI() {
+    const authButtons = document.querySelector('.auth-buttons');
+    if (authButtons) {
+        if (currentUser) {
+            authButtons.innerHTML = `
+                <span style="color: #667eea; margin-right: 1rem;">Welcome, ${currentUser.username}</span>
+                <button class="btn btn-outline" onclick="signOut()">Sign Out</button>
+            `;
+        } else {
+            authButtons.innerHTML = `
+                <button class="btn btn-outline" onclick="openModal(document.getElementById('signin-modal'))">
+                    <i class="fas fa-user"></i> Sign In
+                </button>
+                <button class="btn btn-primary" onclick="openModal(document.getElementById('register-modal'))">
+                    Register
+                </button>
+            `;
+        }
+    }
+}
+
+function signOut() {
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    updateAuthUI();
+    alert('Signed out successfully!');
 }
 
 document.addEventListener('DOMContentLoaded', function() {

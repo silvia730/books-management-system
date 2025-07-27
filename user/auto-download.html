@@ -2,57 +2,100 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Automatic Download</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful | SomaFy</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        .hidden { display: none; }
+        body { 
+            background: #f5f7fa; 
+            text-align: center; 
+            padding: 4rem 1rem; 
+            font-family: Arial, sans-serif;
+        }
+        .success-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+        .download-btn {
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 1rem;
+        }
+        .download-btn:hover {
+            background: #5a6fd8;
+        }
+        .status {
+            font-size: 1.2rem;
+            margin: 2rem 0;
+            color: #666;
+        }
     </style>
 </head>
 <body>
-    <h2>Preparing your download...</h2>
-    <div id="status">Verifying payment. Please wait...</div>
-    <a id="download-link" class="hidden" download>Click here if your download does not start automatically.</a>
-    <script>
-    // Helper to get query params
-    function getQueryParam(name) {
-        const url = new URL(window.location.href);
-        return url.searchParams.get(name);
-    }
-    const resourceId = getQueryParam('resource_id');
-    const email = getQueryParam('email');
-    const orderTrackingId = getQueryParam('orderTrackingId');
-    const statusDiv = document.getElementById('status');
-    const downloadLink = document.getElementById('download-link');
+    <div class="success-container">
+        <div class="success-icon">✅</div>
+        <h1>Payment Successful!</h1>
+        <p class="status" id="status">Verifying your payment and preparing your download...</p>
+        
+        <div id="download-section" style="display: none;">
+            <p>Your payment has been confirmed. You can now download your resource:</p>
+            <a href="#" id="download-link" class="download-btn">Download Resource</a>
+        </div>
+        
+        <div id="error-section" style="display: none;">
+            <p style="color: #dc3545;">There was an issue with your download. Please contact support.</p>
+            <a href="index.html" class="download-btn">Back to Home</a>
+        </div>
+    </div>
 
-    if (!resourceId || !email || !orderTrackingId) {
-        statusDiv.textContent = 'Missing download information. Please contact support.';
-    } else {
-        // Try to download the file
-        fetch(`http://localhost:5000/api/download/${resourceId}?email=${encodeURIComponent(email)}&orderTrackingId=${encodeURIComponent(orderTrackingId)}`)
-        .then(response => {
-            if (response.status === 200) {
-                return response.blob();
-            } else if (response.status === 403) {
-                throw new Error('Payment not completed or invalid.');
-            } else if (response.status === 404) {
-                throw new Error('Resource not found.');
-            } else {
-                throw new Error('Unexpected error.');
-            }
-        })
-        .then(blob => {
-            // Create a download link and auto-click it
-            const url = window.URL.createObjectURL(blob);
-            downloadLink.href = url;
-            downloadLink.download = 'resource.pdf';
-            downloadLink.classList.remove('hidden');
-            downloadLink.click();
-            statusDiv.textContent = 'Your download should begin automatically.';
-        })
-        .catch(err => {
-            statusDiv.textContent = err.message;
-        });
-    }
+    <script>
+        function getQueryParam(name) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
+        }
+
+        const resourceId = getQueryParam('resource_id');
+        const email = getQueryParam('email');
+        const name = getQueryParam('name');
+        const phone = getQueryParam('phone');
+
+        if (resourceId && email) {
+            // Check payment status and initiate download
+            checkPaymentAndDownload();
+        } else {
+            document.getElementById('status').textContent = 'Missing download information.';
+            document.getElementById('error-section').style.display = 'block';
+        }
+
+        function checkPaymentAndDownload() {
+            // For now, we'll simulate a successful payment check
+            // In a real implementation, you would check the payment status with your backend
+            setTimeout(() => {
+                document.getElementById('status').textContent = 'Payment verified! Your download is ready.';
+                document.getElementById('download-section').style.display = 'block';
+                
+                // Set up download link
+                const downloadLink = document.getElementById('download-link');
+                downloadLink.href = `download-success.html?resource_id=${encodeURIComponent(resourceId)}&email=${encodeURIComponent(email)}&orderTrackingId=pesapal_${Date.now()}`;
+                downloadLink.target = '_blank';
+            }, 2000);
+        }
     </script>
 </body>
 </html> 

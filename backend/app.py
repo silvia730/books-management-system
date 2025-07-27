@@ -68,12 +68,12 @@ def get_pesapal_token():
     """Get PesaPal access token with caching"""
     try:
         logger.info("Attempting to get PesaPal token")
-        auth_url = f"{app.config['PESAPAL_BASE_URL']}/Auth/RequestToken"
+    auth_url = f"{app.config['PESAPAL_BASE_URL']}/Auth/RequestToken"
         logger.info(f"Auth URL: {auth_url}")
         
         auth_data = {
-            'consumer_key': app.config['PESAPAL_CONSUMER_KEY'],
-            'consumer_secret': app.config['PESAPAL_CONSUMER_SECRET']
+        'consumer_key': app.config['PESAPAL_CONSUMER_KEY'],
+        'consumer_secret': app.config['PESAPAL_CONSUMER_SECRET']
         }
         logger.info(f"Auth data keys: {list(auth_data.keys())}")
         
@@ -86,8 +86,8 @@ def get_pesapal_token():
         logger.info(f"PesaPal auth response status: {auth_resp.status_code}")
         logger.info(f"PesaPal auth response: {auth_resp.text}")
         
-        if not auth_resp.ok:
-            logger.error(f"Failed to authenticate with PesaPal: {auth_resp.text}")
+    if not auth_resp.ok:
+        logger.error(f"Failed to authenticate with PesaPal: {auth_resp.text}")
             raise Exception(f"Failed to authenticate with PesaPal: {auth_resp.text}")
         
         try:
@@ -178,13 +178,31 @@ def upload_resource():
 @app.route('/api/resources', methods=['GET'])
 def get_resources():
     try:
-        books = Resource.query.filter_by(resource_type='book').all()
-        papers = Resource.query.filter_by(resource_type='paper').all()
-        setbooks = Resource.query.filter_by(resource_type='setbook').all()
+        # Get filter parameters
+        class_grade = request.args.get('class')
+        subject = request.args.get('subject')
+        
+        # Build query
+        query = Resource.query
+        
+        if class_grade:
+            query = query.filter(Resource.class_grade.ilike(f'%{class_grade}%'))
+        if subject:
+            query = query.filter(Resource.subject.ilike(f'%{subject}%'))
+        
+        # Get all resources with filters
+        all_resources = query.all()
+        
+        # Group by resource type
+        books = [r for r in all_resources if r.resource_type == 'book']
+        papers = [r for r in all_resources if r.resource_type == 'paper']
+        setbooks = [r for r in all_resources if r.resource_type == 'setbook']
+        
         return jsonify({
             'books': [b.to_dict() for b in books],
             'papers': [p.to_dict() for p in papers],
-            'setbooks': [s.to_dict() for s in setbooks]
+            'setbooks': [s.to_dict() for s in setbooks],
+            'all': [r.to_dict() for r in all_resources]  # Add all resources for the new page
         })
     except Exception as e:
         logger.error(f"Error fetching resources: {str(e)}")
@@ -193,18 +211,18 @@ def get_resources():
 @app.route('/api/resource/<int:resource_id>', methods=['DELETE'])
 def delete_resource(resource_id):
     try:
-        resource = Resource.query.get(resource_id)
-        if not resource:
-            return jsonify({'success': False, 'error': 'Resource not found'}), 404
+    resource = Resource.query.get(resource_id)
+    if not resource:
+        return jsonify({'success': False, 'error': 'Resource not found'}), 404
         
         # Check if there are any payments for this resource
         payments = Payment.query.filter_by(resource_id=resource_id).first()
         if payments:
             return jsonify({'success': False, 'error': 'Cannot delete resource with existing payments'}), 400
         
-        db.session.delete(resource)
-        db.session.commit()
-        return jsonify({'success': True})
+    db.session.delete(resource)
+    db.session.commit()
+    return jsonify({'success': True})
     except Exception as e:
         db.session.rollback()
         logger.error(f"Error deleting resource {resource_id}: {str(e)}")
@@ -372,7 +390,7 @@ def pay():
             return jsonify({'error': f'Failed to create payment order: {order_resp.text}'}), 500
         
         try:
-            order_response = order_resp.json()
+        order_response = order_resp.json()
         except Exception as e:
             logger.error(f"Failed to parse PesaPal response as JSON: {order_resp.text}")
             return jsonify({'error': 'Invalid response from payment service'}), 500
