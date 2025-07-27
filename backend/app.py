@@ -8,6 +8,7 @@ import logging
 import hashlib
 import hmac
 import time
+import uuid
 from datetime import datetime
 from flask_migrate import Migrate
 from functools import wraps
@@ -105,6 +106,37 @@ def get_pesapal_token():
     except Exception as e:
         logger.error(f"Error getting PesaPal token: {str(e)}")
         raise
+
+def generate_unique_order_id():
+    """Generate a unique order tracking ID"""
+    return str(uuid.uuid4())
+
+def create_payment_record(order_tracking_id, resource_id, user_email, amount, status='PENDING'):
+    """Create a payment record with retry logic for duplicate order_tracking_id"""
+    max_retries = 5
+    for attempt in range(max_retries):
+        try:
+            payment = Payment(
+                order_tracking_id=order_tracking_id,
+                resource_id=resource_id,
+                user_email=user_email,
+                amount=amount,
+                status=status
+                # currency will use default value from model
+            )
+            db.session.add(payment)
+            db.session.commit()
+            logger.info(f"Payment record created successfully: {order_tracking_id}")
+            return payment
+        except Exception as e:
+            if "Duplicate entry" in str(e) and "order_tracking_id" in str(e) and attempt < max_retries - 1:
+                logger.warning(f"Duplicate order_tracking_id detected, retrying with new UUID: {order_tracking_id}")
+                db.session.rollback()
+                order_tracking_id = generate_unique_order_id()
+            else:
+                logger.error(f"Failed to create payment record: {str(e)}")
+                db.session.rollback()
+                raise
 
 @app.route('/')
 def index():
@@ -268,17 +300,8 @@ def pay():
         if not pesapal_key or not pesapal_secret:
             logger.warning('PesaPal credentials missing - using test payment mode')
             # Create a test payment instead
-            test_order_id = f"test_{int(time.time())}"
-            payment = Payment(
-                order_tracking_id=test_order_id,
-                resource_id=resource_id,
-                user_email=user_email,
-                amount=amount,
-                status='COMPLETED'  # Mark as completed for testing
-                # currency will use default value from model
-            )
-            db.session.add(payment)
-            db.session.commit()
+            test_order_id = f"test_{generate_unique_order_id()}"
+            payment = create_payment_record(test_order_id, resource_id, user_email, amount, 'COMPLETED')
             
             logger.info(f"Test payment created: {test_order_id}")
             
@@ -361,17 +384,8 @@ def pay():
             logger.error(f"Missing payment_url or order_tracking_id in response: {order_response}")
             return jsonify({'error': 'Invalid response from payment service'}), 500
         
-        # Store payment record
-        payment = Payment(
-            order_tracking_id=order_tracking_id,
-            resource_id=resource_id,
-            user_email=user_email,
-            amount=amount,
-            status='PENDING'
-            # currency will use default value from model
-        )
-        db.session.add(payment)
-        db.session.commit()
+        # Store payment record using the safe creation function
+        payment = create_payment_record(order_tracking_id, resource_id, user_email, amount, 'PENDING')
         
         logger.info(f"Payment initiated: Order ID {order_tracking_id}, Resource {resource_id}, Email {user_email}")
         
@@ -406,17 +420,8 @@ def test_pay():
             return jsonify({'error': 'Resource not found'}), 404
         
         # Create a test payment record
-        test_order_id = f"test_{int(time.time())}"
-        payment = Payment(
-            order_tracking_id=test_order_id,
-            resource_id=resource_id,
-            user_email=user_email,
-            amount=amount,
-            status='COMPLETED'  # Mark as completed for testing
-            # currency will use default value from model
-        )
-        db.session.add(payment)
-        db.session.commit()
+        test_order_id = f"test_{generate_unique_order_id()}"
+        payment = create_payment_record(test_order_id, resource_id, user_email, amount, 'COMPLETED')
         
         logger.info(f"Test payment created: {test_order_id}")
         

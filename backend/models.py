@@ -38,7 +38,7 @@ class User(db.Model):
 
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    order_tracking_id = db.Column(db.String(100), unique=True, nullable=False)
+    order_tracking_id = db.Column(db.String(100), unique=True, nullable=False, index=True)
     transaction_tracking_id = db.Column(db.String(100), nullable=True)
     merchant_reference = db.Column(db.String(100), nullable=True)
     resource_id = db.Column(db.Integer, db.ForeignKey('resource.id'), nullable=False)
