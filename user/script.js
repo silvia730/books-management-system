@@ -494,6 +494,26 @@ function checkUserAuth() {
     updateAuthUI();
 }
 
+// Toggle mobile menu
+document.querySelector('.hamburger-menu').addEventListener('click', function() {
+    this.classList.toggle('open');
+    document.querySelector('.mobile-menu-overlay').classList.toggle('active');
+});
+
+// Close mobile menu
+document.querySelector('.mobile-menu-close').addEventListener('click', function() {
+    document.querySelector('.mobile-menu-overlay').classList.remove('active');
+    document.querySelector('.hamburger-menu').classList.remove('open');
+});
+
+// Close mobile menu when clicking on a link
+document.querySelectorAll('.mobile-nav a').forEach(link => {
+    link.addEventListener('click', function() {
+        document.querySelector('.mobile-menu-overlay').classList.remove('active');
+        document.querySelector('.hamburger-menu').classList.remove('open');
+    });
+});
+
 function updateAuthUI() {
     console.log('🔄 Updating authentication UI...');
     console.log('Current user:', currentUser);
