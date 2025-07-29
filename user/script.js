@@ -843,16 +843,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 // Ensure Sign In and Register links open their modals (fix)
-document.querySelectorAll('.user-actions a').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
-            console.log('Sign In clicked');
-            openModal(document.getElementById('signin-modal'));
-        } else if (this.textContent.includes('Register')) {
-            console.log('Register clicked');
-            openModal(document.getElementById('register-modal'));
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.user-actions a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
+                console.log('Sign In clicked');
+                openModal(document.getElementById('signin-modal'));
+            } else if (this.textContent.includes('Register')) {
+                console.log('Register clicked');
+                openModal(document.getElementById('register-modal'));
+            }
+        });
     });
 });
 

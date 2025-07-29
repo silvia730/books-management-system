@@ -313,15 +313,14 @@ function mainAdminInit() {
     // Show dashboard by default
     document.getElementById('section-dashboard').style.display = '';
 
-    // Logout logic
-    const adminLogout = document.getElementById('admin-logout');
-    if (adminLogout) {
-        adminLogout.addEventListener('click', function(e) {
+    // Logout logic - handle multiple logout buttons
+    document.querySelectorAll('#admin-logout').forEach(logoutBtn => {
+        logoutBtn.addEventListener('click', function(e) {
             e.preventDefault();
             document.getElementById('admin-dashboard').style.display = 'none';
             document.getElementById('admin-login-modal').style.display = 'flex';
         });
-    }
+    });
 
     // Settings form logic (change password)
     const settingsForm = document.getElementById('settings-form');

@@ -37,7 +37,6 @@
                     <li><a href="#" data-section="setbooks"><i class="fas fa-book-reader"></i> Setbooks</a></li>
                     <li><a href="#" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
                     <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> Settings</a></li>
-                    <li><a href="#" id="admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
         <!-- Admin Main Content -->
@@ -49,6 +48,7 @@
                 <div class="admin-actions">
                     <span><i class="fas fa-bell"></i></span>
                     <span><i class="fas fa-user-circle"></i> Admin User</span>
+                    <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
             <div class="admin-stats">
@@ -76,7 +76,14 @@
                 </div>
                 <!-- Upload Section -->
                 <div id="section-upload" style="display:none;">
-                <h2>Upload New Resource</h2>
+                <div class="admin-header">
+                    <h1>Upload New Resource</h1>
+                    <div class="admin-actions">
+                        <span><i class="fas fa-bell"></i></span>
+                        <span><i class="fas fa-user-circle"></i> Admin User</span>
+                        <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
                 <form id="upload-form">
                         <div class="form-group">
                             <label for="resource-type">Resource Type</label>
@@ -146,27 +153,62 @@
                 </div>
                 <!-- Books Section -->
                 <div id="section-books" style="display:none;">
-                    <h2>Books</h2>
+                    <div class="admin-header">
+                        <h1>Books</h1>
+                        <div class="admin-actions">
+                            <span><i class="fas fa-bell"></i></span>
+                            <span><i class="fas fa-user-circle"></i> Admin User</span>
+                            <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
                     <div id="books-list"></div>
                 </div>
                 <!-- Papers Section -->
                 <div id="section-papers" style="display:none;">
-                    <h2>Papers</h2>
+                    <div class="admin-header">
+                        <h1>Papers</h1>
+                        <div class="admin-actions">
+                            <span><i class="fas fa-bell"></i></span>
+                            <span><i class="fas fa-user-circle"></i> Admin User</span>
+                            <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
                     <div id="papers-list"></div>
                 </div>
                 <!-- Setbooks Section -->
                 <div id="section-setbooks" style="display:none;">
-                    <h2>Setbooks</h2>
+                    <div class="admin-header">
+                        <h1>Setbooks</h1>
+                        <div class="admin-actions">
+                            <span><i class="fas fa-bell"></i></span>
+                            <span><i class="fas fa-user-circle"></i> Admin User</span>
+                            <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
                     <div id="setbooks-list"></div>
                 </div>
                 <!-- Analytics Section -->
                 <div id="section-analytics" style="display:none;">
-                    <h2>Analytics</h2>
+                    <div class="admin-header">
+                        <h1>Analytics</h1>
+                        <div class="admin-actions">
+                            <span><i class="fas fa-bell"></i></span>
+                            <span><i class="fas fa-user-circle"></i> Admin User</span>
+                            <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
                     <div id="analytics-content">Analytics coming soon...</div>
                 </div>
                 <!-- Settings Section -->
                 <div id="section-settings" style="display:none;">
-                    <h2>Settings</h2>
+                    <div class="admin-header">
+                        <h1>Settings</h1>
+                        <div class="admin-actions">
+                            <span><i class="fas fa-bell"></i></span>
+                            <span><i class="fas fa-user-circle"></i> Admin User</span>
+                            <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
                     <form id="settings-form">
                         <label>Old Password</label>
                         <input type="password" id="old-password" placeholder="Old Password" required>

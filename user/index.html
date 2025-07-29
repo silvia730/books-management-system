@@ -101,20 +101,7 @@
         <h2 class="section-title">Premium Educational Resources</h2>
         <div class="revision-slider">
             <div class="slider-container">
-                <div class="slider-item">
-                    <img src="assets/exam paper2.jpg" alt="KCPE & KCSE Past Papers" class="slider-image">
-                    <div class="slider-caption">
-                        <h3>KCPE & KCSE Past Papers</h3>
-                        <p>Comprehensive collection of past papers with marking schemes</p>
-                    </div>
-                </div>
-                <div class="slider-item">
-                    <img src="assets/WhatsApp Image 2025-07-21 at 17.39.48_efa085dc.jpg" alt="Textbooks & Setbooks" class="slider-image">
-                    <div class="slider-caption">
-                        <h3>Textbooks & Setbooks</h3>
-                        <p>Curriculum-aligned textbooks and literature setbooks</p>
-                    </div>
-                </div>
+                <!-- Slider items will be dynamically created by JavaScript -->
             </div>
             <button class="slider-arrow prev">
                 <i class="fas fa-chevron-left"></i>
@@ -123,8 +110,7 @@
                 <i class="fas fa-chevron-right"></i>
             </button>
             <div class="slider-nav">
-                <div class="slider-dot active" data-index="0"></div>
-                <div class="slider-dot" data-index="1"></div>
+                <!-- Navigation dots will be dynamically created by JavaScript -->
             </div>
         </div>
         <div class="revision-cta">
@@ -252,8 +238,8 @@
             <span class="close-modal" data-modal="signin-modal">&times;</span>
             <h2>Sign In</h2>
             <form id="signin-form">
-                <input type="text" placeholder="Username or Email" required>
-                <input type="password" placeholder="Password" required>
+                <input type="text" id="signin-username" placeholder="Username or Email" required>
+                <input type="password" id="signin-password" placeholder="Password" required>
                 <button type="submit" class="btn btn-primary">Sign In</button>
             </form>
             <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
@@ -266,9 +252,9 @@
             <span class="close-modal" data-modal="register-modal">&times;</span>
             <h2>Register</h2>
             <form id="register-form">
-                <input type="text" placeholder="Username" required>
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
+                <input type="text" id="register-username" placeholder="Username" required>
+                <input type="email" id="register-email" placeholder="Email" required>
+                <input type="password" id="register-password" placeholder="Password" required>
                 <button type="submit" class="btn btn-primary">Register</button>
             </form>
             <p>Already have an account? <a href="#" id="show-signin">Sign In</a></p>
@@ -318,20 +304,6 @@
                 });
             });
 
-            // Sign In and Register links
-            document.querySelectorAll('.user-actions a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
-                        console.log('Sign In clicked');
-                        openModal(document.getElementById('signin-modal'));
-                    } else if (this.textContent.includes('Register')) {
-                        console.log('Register clicked');
-                        openModal(document.getElementById('register-modal'));
-                    }
-                });
-            });
-
             // Modal switching
             const showRegisterLink = document.getElementById('show-register');
             const showSigninLink = document.getElementById('show-signin');
@@ -341,6 +313,14 @@
                     e.preventDefault();
                     closeModal(document.getElementById('signin-modal'));
                     openModal(document.getElementById('register-modal'));
+                });
+            }
+            
+            if (showSigninLink) {
+                showSigninLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    closeModal(document.getElementById('register-modal'));
+                    openModal(document.getElementById('signin-modal'));
                 });
             }
             

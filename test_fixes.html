@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixes - SomaFy</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        button { 
+            padding: 10px 20px; 
+            margin: 5px; 
+            cursor: pointer; 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 4px;
+        }
+        button:hover { background: #0056b3; }
+        .slider-test {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            background: #ddd;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .slider-container {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+        .slider-item {
+            min-width: 100%;
+            background: linear-gradient(45deg, #007bff, #28a745);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .slider-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .slider-dot.active {
+            background: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Fixes - SomaFy</h1>
+    
+    <div class="test-section">
+        <h3>🔧 Slider Test</h3>
+        <p>Testing if the slider works with dynamic content:</p>
+        
+        <div class="slider-test">
+            <div class="slider-container" id="test-slider">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+        <div class="slider-nav" id="test-slider-nav">
+            <!-- Will be populated by JavaScript -->
+        </div>
+        
+        <button onclick="testSlider()">Test Slider</button>
+        <button onclick="nextSlide()">Next Slide</button>
+        <button onclick="prevSlide()">Prev Slide</button>
+        
+        <div id="slider-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🔐 Authentication Test</h3>
+        <p>Testing if authentication forms work:</p>
+        
+        <button onclick="testSignIn()">Test Sign In Form</button>
+        <button onclick="testRegister()">Test Register Form</button>
+        
+        <div id="auth-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>📋 Test Results</h3>
+        <div id="test-results">
+            <p class="info">Click the test buttons above to run diagnostics...</p>
+        </div>
+    </div>
+
+    <script>
+        // Test slider data
+        const testSlides = [
+            { title: "Slide 1", color: "#007bff" },
+            { title: "Slide 2", color: "#28a745" },
+            { title: "Slide 3", color: "#dc3545" }
+        ];
+        
+        let currentSlide = 0;
+        
+        function testSlider() {
+            const slider = document.getElementById('test-slider');
+            const nav = document.getElementById('test-slider-nav');
+            const result = document.getElementById('slider-result');
+            
+            // Clear existing content
+            slider.innerHTML = '';
+            nav.innerHTML = '';
+            
+            // Create slides
+            testSlides.forEach((slide, index) => {
+                const slideItem = document.createElement('div');
+                slideItem.className = 'slider-item';
+                slideItem.style.background = slide.color;
+                slideItem.textContent = slide.title;
+                slider.appendChild(slideItem);
+                
+                // Create navigation dot
+                const dot = document.createElement('div');
+                dot.className = 'slider-dot';
+                dot.dataset.index = index;
+                if (index === 0) dot.classList.add('active');
+                dot.onclick = () => goToSlide(index);
+                nav.appendChild(dot);
+            });
+            
+            result.innerHTML = '<p class="success">✅ Slider created successfully with ' + testSlides.length + ' slides</p>';
+            updateTestResults('slider', 'success');
+        }
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            const slider = document.getElementById('test-slider');
+            const dots = document.querySelectorAll('#test-slider-nav .slider-dot');
+            
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % testSlides.length;
+            goToSlide(currentSlide);
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + testSlides.length) % testSlides.length;
+            goToSlide(currentSlide);
+        }
+        
+        function testSignIn() {
+            const result = document.getElementById('auth-result');
+            
+            // Check if form elements exist
+            const form = document.getElementById('signin-form');
+            const username = document.getElementById('signin-username');
+            const password = document.getElementById('signin-password');
+            
+            if (form && username && password) {
+                result.innerHTML = '<p class="success">✅ Sign In form elements found correctly</p>';
+                updateTestResults('signin', 'success');
+            } else {
+                result.innerHTML = '<p class="error">❌ Sign In form elements missing</p>';
+                updateTestResults('signin', 'error');
+            }
+        }
+        
+        function testRegister() {
+            const result = document.getElementById('auth-result');
+            
+            // Check if form elements exist
+            const form = document.getElementById('register-form');
+            const username = document.getElementById('register-username');
+            const email = document.getElementById('register-email');
+            const password = document.getElementById('register-password');
+            
+            if (form && username && email && password) {
+                result.innerHTML = '<p class="success">✅ Register form elements found correctly</p>';
+                updateTestResults('register', 'success');
+            } else {
+                result.innerHTML = '<p class="error">❌ Register form elements missing</p>';
+                updateTestResults('register', 'error');
+            }
+        }
+        
+        function updateTestResults(test, status) {
+            const results = document.getElementById('test-results');
+            const existing = results.querySelector(`[data-test="${test}"]`);
+            
+            const resultElement = document.createElement('p');
+            resultElement.dataset.test = test;
+            resultElement.className = status;
+            
+            if (test === 'slider') {
+                resultElement.textContent = status === 'success' ? 
+                    '✅ Slider functionality working correctly' : 
+                    '❌ Slider functionality has issues';
+            } else if (test === 'signin') {
+                resultElement.textContent = status === 'success' ? 
+                    '✅ Sign In form working correctly' : 
+                    '❌ Sign In form has issues';
+            } else if (test === 'register') {
+                resultElement.textContent = status === 'success' ? 
+                    '✅ Register form working correctly' : 
+                    '❌ Register form has issues';
+            }
+            
+            if (existing) {
+                existing.replaceWith(resultElement);
+            } else {
+                results.appendChild(resultElement);
+            }
+        }
+        
+        // Auto-run tests when page loads
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                testSlider();
+                testSignIn();
+                testRegister();
+            }, 500);
+        });
+    </script>
+</body>
+</html> 

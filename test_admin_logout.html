@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin Logout - SomaFy</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .admin-actions {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .admin-actions span {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .admin-actions span:hover {
+            color: #0066cc;
+        }
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #B22222;
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .logout-btn:hover {
+            background-color: #8b0000;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(178, 34, 34, 0.3);
+        }
+        .logout-btn i {
+            font-size: 0.9rem;
+        }
+        .section-preview {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <h1>Test Admin Logout Button - SomaFy</h1>
+    
+    <div class="test-section">
+        <h3>🔧 Logout Button Test</h3>
+        <p>Testing the new red logout button in the top right corner:</p>
+        
+        <div class="section-preview">
+            <h4>Dashboard Section Preview:</h4>
+            <div class="admin-header">
+                <h1>Dashboard</h1>
+                <div class="admin-actions">
+                    <span><i class="fas fa-bell"></i></span>
+                    <span><i class="fas fa-user-circle"></i> Admin User</span>
+                    <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-preview">
+            <h4>Upload Section Preview:</h4>
+            <div class="admin-header">
+                <h1>Upload New Resource</h1>
+                <div class="admin-actions">
+                    <span><i class="fas fa-bell"></i></span>
+                    <span><i class="fas fa-user-circle"></i> Admin User</span>
+                    <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-preview">
+            <h4>Books Section Preview:</h4>
+            <div class="admin-header">
+                <h1>Books</h1>
+                <div class="admin-actions">
+                    <span><i class="fas fa-bell"></i></span>
+                    <span><i class="fas fa-user-circle"></i> Admin User</span>
+                    <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+        
+        <button onclick="testLogoutButtons()">Test Logout Buttons</button>
+        <div id="logout-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>📋 Test Results</h3>
+        <div id="test-results">
+            <p class="info">Click the test button above to run diagnostics...</p>
+        </div>
+    </div>
+
+    <script>
+        function testLogoutButtons() {
+            const result = document.getElementById('logout-result');
+            const results = document.getElementById('test-results');
+            
+            // Check if logout buttons exist
+            const logoutButtons = document.querySelectorAll('#admin-logout');
+            
+            if (logoutButtons.length > 0) {
+                result.innerHTML = `<p class="success">✅ Found ${logoutButtons.length} logout button(s)</p>`;
+                
+                // Check styling
+                let allRed = true;
+                logoutButtons.forEach((btn, index) => {
+                    const styles = window.getComputedStyle(btn);
+                    const bgColor = styles.backgroundColor;
+                    
+                    // Check if it's red (approximate check)
+                    if (!bgColor.includes('178') && !bgColor.includes('222') && !bgColor.includes('34')) {
+                        allRed = false;
+                    }
+                    
+                    console.log(`Logout button ${index + 1} background color:`, bgColor);
+                });
+                
+                if (allRed) {
+                    result.innerHTML += `<p class="success">✅ All logout buttons are red</p>`;
+                    updateTestResults('logout', 'success');
+                } else {
+                    result.innerHTML += `<p class="error">❌ Some logout buttons are not red</p>`;
+                    updateTestResults('logout', 'error');
+                }
+                
+                // Test click functionality
+                logoutButtons.forEach((btn, index) => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        result.innerHTML += `<p class="success">✅ Logout button ${index + 1} clicked successfully</p>`;
+                    });
+                });
+                
+            } else {
+                result.innerHTML = `<p class="error">❌ No logout buttons found</p>`;
+                updateTestResults('logout', 'error');
+            }
+        }
+        
+        function updateTestResults(test, status) {
+            const results = document.getElementById('test-results');
+            const existing = results.querySelector(`[data-test="${test}"]`);
+            
+            const resultElement = document.createElement('p');
+            resultElement.dataset.test = test;
+            resultElement.className = status;
+            
+            if (test === 'logout') {
+                resultElement.textContent = status === 'success' ? 
+                    '✅ Logout button functionality working correctly' : 
+                    '❌ Logout button functionality has issues';
+            }
+            
+            if (existing) {
+                existing.replaceWith(resultElement);
+            } else {
+                results.appendChild(resultElement);
+            }
+        }
+        
+        // Auto-run tests when page loads
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                testLogoutButtons();
+            }, 500);
+        });
+    </script>
+</body>
+</html> 

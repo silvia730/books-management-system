@@ -120,6 +120,32 @@ h1, h2, h3, h4, h5 {
     color: var(--nairobi-blue);
 }
 
+/* Logout Button Styles */
+.logout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--clay-red);
+    color: var(--cloud-white);
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #8b0000;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(178, 34, 34, 0.3);
+}
+
+.logout-btn i {
+    font-size: 0.9rem;
+}
+
 /* Stats Cards */
 .admin-stats {
     display: grid;
