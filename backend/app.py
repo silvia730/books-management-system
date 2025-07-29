@@ -13,7 +13,14 @@ import random
 import json
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('app.log')
+    ]
+)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
@@ -33,7 +40,7 @@ def ensure_admin_user():
 def get_pesapal_token():
     """Get PesaPal access token"""
     try:
-        logger.info("Attempting to get PesaPal token")
+        logger.info("=== PESAPAL TOKEN REQUEST START ===")
         auth_url = f"{app.config['PESAPAL_BASE_URL']}/Auth/RequestToken"
         
         auth_data = {
@@ -45,27 +52,61 @@ def get_pesapal_token():
         logger.info(f"Consumer key exists: {bool(app.config['PESAPAL_CONSUMER_KEY'])}")
         logger.info(f"Consumer secret exists: {bool(app.config['PESAPAL_CONSUMER_SECRET'])}")
         
+        # Log request details (without exposing secrets)
+        logger.info(f"Request method: POST")
+        logger.info(f"Request headers: Content-Type: application/json")
+        logger.info(f"Request timeout: 30 seconds")
+        
         auth_resp = requests.post(auth_url, json=auth_data, timeout=30)
         
         logger.info(f"PesaPal auth response status: {auth_resp.status_code}")
-        logger.info(f"PesaPal auth response: {auth_resp.text}")
+        logger.info(f"PesaPal auth response headers: {dict(auth_resp.headers)}")
+        logger.info(f"PesaPal auth response body: {auth_resp.text}")
         
         if not auth_resp.ok:
-            logger.error(f"Failed to authenticate with PesaPal: {auth_resp.text}")
-            raise Exception(f"Failed to authenticate with PesaPal: {auth_resp.text}")
+            error_details = {
+                'status_code': auth_resp.status_code,
+                'response_text': auth_resp.text,
+                'response_headers': dict(auth_resp.headers)
+            }
+            logger.error(f"PesaPal authentication failed: {error_details}")
+            
+            # Try to parse error response
+            try:
+                error_json = auth_resp.json()
+                error_message = error_json.get('error', error_json.get('message', auth_resp.text))
+            except json.JSONDecodeError:
+                error_message = auth_resp.text
+            
+            raise Exception(f"PesaPal authentication failed (Status: {auth_resp.status_code}): {error_message}")
         
-        auth_response = auth_resp.json()
+        try:
+            auth_response = auth_resp.json()
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse PesaPal auth response as JSON: {auth_resp.text}")
+            raise Exception(f"Invalid JSON response from PesaPal: {str(e)}")
+        
         access_token = auth_response.get('token')
         
         if not access_token:
-            logger.error("No access token received from PesaPal")
+            logger.error(f"No access token in PesaPal response: {auth_response}")
             raise Exception("No access token received from PesaPal")
         
         logger.info("PesaPal token received successfully")
+        logger.info("=== PESAPAL TOKEN REQUEST END ===")
         return access_token
         
+    except requests.exceptions.Timeout:
+        logger.error("PesaPal authentication request timed out")
+        raise Exception("PesaPal authentication request timed out")
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f"Connection error during PesaPal authentication: {str(e)}")
+        raise Exception(f"Unable to connect to PesaPal: {str(e)}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request error during PesaPal authentication: {str(e)}")
+        raise Exception(f"PesaPal request failed: {str(e)}")
     except Exception as e:
-        logger.error(f"Error getting PesaPal token: {str(e)}")
+        logger.error(f"Unexpected error getting PesaPal token: {str(e)}")
         raise e
 
 def generate_unique_order_id():
@@ -198,29 +239,110 @@ def get_user_count():
     count = User.query.count()
     return jsonify({'count': count})
 
+@app.route('/api/debug/pesapal-config', methods=['GET'])
+def debug_pesapal_config():
+    """Debug endpoint to check PesaPal configuration (for development only)"""
+    try:
+        config_info = {
+            'pesapal_base_url': app.config.get('PESAPAL_BASE_URL'),
+            'consumer_key_exists': bool(app.config.get('PESAPAL_CONSUMER_KEY')),
+            'consumer_secret_exists': bool(app.config.get('PESAPAL_CONSUMER_SECRET')),
+            'notification_id': app.config.get('PESAPAL_NOTIFICATION_ID'),
+            'callback_url': 'https://books-management-system-bcr5.onrender.com/api/pesapal-callback'
+        }
+        
+        # Test PesaPal connectivity if credentials are configured
+        if app.config.get('PESAPAL_CONSUMER_KEY') and app.config.get('PESAPAL_CONSUMER_SECRET'):
+            try:
+                logger.info("Testing PesaPal connectivity...")
+                access_token = get_pesapal_token()
+                config_info['pesapal_connectivity'] = 'SUCCESS'
+                config_info['access_token_received'] = bool(access_token)
+            except Exception as e:
+                config_info['pesapal_connectivity'] = 'FAILED'
+                config_info['connectivity_error'] = str(e)
+        else:
+            config_info['pesapal_connectivity'] = 'NOT_CONFIGURED'
+        
+        return jsonify(config_info)
+        
+    except Exception as e:
+        logger.error(f"Error in debug endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/pay', methods=['POST'])
 def pay():
     """PesaPal v3 API payment endpoint"""
     try:
+        logger.info("=== PESAPAL PAYMENT REQUEST START ===")
+        
+        # Validate request data
         data = request.get_json()
         if not data:
+            logger.error("No JSON data provided in payment request")
             return jsonify({'error': 'No data provided'}), 400
-        # Extract payment data
+        
+        logger.info(f"Payment request data: {data}")
+        
+        # Extract and validate payment data
         resource_id = data.get('resource_id')
         email = data.get('email')
         amount = data.get('amount')
         name = data.get('name')
         phone = data.get('phone')
-        if not all([resource_id, email, amount, name, phone]):
-            return jsonify({'error': 'Missing required fields'}), 400
+        
+        # Detailed validation with specific error messages
+        missing_fields = []
+        if not resource_id:
+            missing_fields.append('resource_id')
+        if not email:
+            missing_fields.append('email')
+        if not amount:
+            missing_fields.append('amount')
+        if not name:
+            missing_fields.append('name')
+        if not phone:
+            missing_fields.append('phone')
+        
+        if missing_fields:
+            error_msg = f"Missing required fields: {', '.join(missing_fields)}"
+            logger.error(f"Payment validation failed: {error_msg}")
+            return jsonify({'error': error_msg}), 400
+        
+        # Validate amount format
+        try:
+            amount_float = float(amount)
+            if amount_float <= 0:
+                logger.error(f"Invalid amount: {amount} (must be positive)")
+                return jsonify({'error': 'Amount must be a positive number'}), 400
+        except (ValueError, TypeError):
+            logger.error(f"Invalid amount format: {amount}")
+            return jsonify({'error': 'Amount must be a valid number'}), 400
+        
+        # Validate email format
+        if '@' not in email or '.' not in email:
+            logger.error(f"Invalid email format: {email}")
+            return jsonify({'error': 'Invalid email format'}), 400
+        
+        # Check if resource exists
         resource = Resource.query.get(resource_id)
         if not resource:
+            logger.error(f"Resource not found: {resource_id}")
             return jsonify({'error': 'Resource not found'}), 404
+        
+        logger.info(f"Resource found: {resource.title} (ID: {resource_id})")
+        
+        # Generate order tracking ID
         order_tracking_id = f"ORDER_{int(time.time())}_{random.randint(1000, 9999)}"
+        logger.info(f"Generated order tracking ID: {order_tracking_id}")
+        
+        # Check PesaPal configuration
         pesapal_key = app.config['PESAPAL_CONSUMER_KEY']
         pesapal_secret = app.config['PESAPAL_CONSUMER_SECRET']
         pesapal_base_url = app.config['PESAPAL_BASE_URL']
+        
         if not pesapal_key or not pesapal_secret:
+            logger.warning("PesaPal credentials not configured, using test mode")
             payment = create_payment_record(
                 order_tracking_id=order_tracking_id,
                 resource_id=resource_id,
@@ -236,15 +358,28 @@ def pay():
                 'redirectUrl': f"https://books-management-system-bcr5.onrender.com/user/download-success.html?resource_id={resource_id}&email={email}&orderTrackingId={order_tracking_id}",
                 'message': 'Test payment successful (PesaPal not configured)'
             })
+        
+        # Get PesaPal access token
         try:
+            logger.info("Requesting PesaPal access token...")
             access_token = get_pesapal_token()
+            logger.info("PesaPal access token received successfully")
         except Exception as e:
+            logger.error(f"Failed to get PesaPal access token: {str(e)}")
             return jsonify({'error': f'Payment service temporarily unavailable: {str(e)}'}), 503
+        
+        # Prepare PesaPal order request
         order_url = f"{pesapal_base_url}/Transactions/SubmitOrderRequest"
+        
+        # Parse name into first and last name
+        name_parts = name.split()
+        first_name = name_parts[0] if name_parts else 'User'
+        last_name = name_parts[-1] if len(name_parts) > 1 else 'User'
+        
         pesapal_order = {
             'id': order_tracking_id,
             'currency': 'KES',
-            'amount': float(amount),
+            'amount': amount_float,
             'description': f"Purchase: {resource.title}",
             'callback_url': 'https://books-management-system-bcr5.onrender.com/api/pesapal-callback',
             'notification_id': app.config.get('PESAPAL_NOTIFICATION_ID', '4ad16ada-f09b-4b45-8c18-db86b60a879d'),
@@ -252,47 +387,111 @@ def pay():
                 'email_address': email,
                 'phone_number': phone,
                 'country_code': 'KE',
-                'first_name': name.split()[0] if name else 'User',
-                'last_name': name.split()[-1] if name and len(name.split()) > 1 else 'User'
+                'first_name': first_name,
+                'last_name': last_name
             }
         }
+        
         headers = {
             'Authorization': f'Bearer {access_token}',
             'Content-Type': 'application/json'
         }
-        order_resp = requests.post(order_url, json=pesapal_order, headers=headers)
+        
+        logger.info(f"PesaPal order URL: {order_url}")
+        logger.info(f"PesaPal order data: {pesapal_order}")
+        logger.info(f"Request headers: {headers}")
+        
+        # Submit order to PesaPal
+        try:
+            logger.info("Submitting order to PesaPal...")
+            order_resp = requests.post(order_url, json=pesapal_order, headers=headers, timeout=30)
+            
+            logger.info(f"PesaPal order response status: {order_resp.status_code}")
+            logger.info(f"PesaPal order response headers: {dict(order_resp.headers)}")
+            logger.info(f"PesaPal order response body: {order_resp.text}")
+            
+        except requests.exceptions.Timeout:
+            logger.error("PesaPal order request timed out")
+            return jsonify({'error': 'Payment service request timed out'}), 503
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"Connection error during PesaPal order request: {str(e)}")
+            return jsonify({'error': f'Unable to connect to payment service: {str(e)}'}), 503
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Request error during PesaPal order request: {str(e)}")
+            return jsonify({'error': f'Payment service request failed: {str(e)}'}), 503
+        
+        # Handle PesaPal response
         if order_resp.status_code != 200:
-            # Try to extract error from PesaPal response
+            error_details = {
+                'status_code': order_resp.status_code,
+                'response_text': order_resp.text,
+                'response_headers': dict(order_resp.headers)
+            }
+            logger.error(f"PesaPal order request failed: {error_details}")
+            
+            # Try to extract detailed error from PesaPal response
             try:
                 error_json = order_resp.json()
-                error_message = error_json.get('error', order_resp.text)
-            except Exception:
+                error_message = error_json.get('error', error_json.get('message', error_json.get('error_description', order_resp.text)))
+                error_code = error_json.get('error_code', 'UNKNOWN')
+                logger.error(f"PesaPal error code: {error_code}, message: {error_message}")
+            except json.JSONDecodeError:
                 error_message = order_resp.text
-            return jsonify({'error': f'Payment service error: {error_message}'}), 500
+                logger.error(f"Could not parse PesaPal error response as JSON: {order_resp.text}")
+            
+            return jsonify({
+                'error': f'Payment service error: {error_message}',
+                'status_code': order_resp.status_code,
+                'details': error_details
+            }), 500
+        
+        # Parse successful response
         try:
             order_response = order_resp.json()
-        except json.JSONDecodeError:
-            return jsonify({'error': f'Invalid response from payment service: {order_resp.text}'}), 500
+            logger.info(f"PesaPal order response parsed: {order_response}")
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse PesaPal order response as JSON: {order_resp.text}")
+            return jsonify({'error': f'Invalid response from payment service: {str(e)}'}), 500
+        
+        # Validate response structure
         if 'order_tracking_id' not in order_response:
-            return jsonify({'error': f'Invalid response from payment service: {order_response}'}), 500
-        payment = create_payment_record(
-            order_tracking_id=order_tracking_id,
-            resource_id=resource_id,
-            user_email=email,
-            amount=amount
-        )
-        db.session.add(payment)
-        db.session.commit()
+            logger.error(f"Missing order_tracking_id in PesaPal response: {order_response}")
+            return jsonify({'error': f'Invalid response from payment service: missing order_tracking_id'}), 500
+        
+        # Create payment record
+        try:
+            payment = create_payment_record(
+                order_tracking_id=order_tracking_id,
+                resource_id=resource_id,
+                user_email=email,
+                amount=amount
+            )
+            db.session.add(payment)
+            db.session.commit()
+            logger.info(f"Payment record created successfully: {order_tracking_id}")
+        except Exception as e:
+            logger.error(f"Failed to create payment record: {str(e)}")
+            db.session.rollback()
+            return jsonify({'error': f'Failed to create payment record: {str(e)}'}), 500
+        
+        # Prepare response
         redirect_url = order_response.get('redirect_url')
         if not redirect_url:
             redirect_url = f"https://books-management-system-bcr5.onrender.com/user/download-success.html?resource_id={resource_id}&email={email}&orderTrackingId={order_tracking_id}"
+            logger.warning(f"No redirect_url in PesaPal response, using fallback: {redirect_url}")
+        
+        logger.info(f"Payment initiated successfully. Redirect URL: {redirect_url}")
+        logger.info("=== PESAPAL PAYMENT REQUEST END ===")
+        
         return jsonify({
             'success': True,
             'orderTrackingId': order_tracking_id,
             'redirectUrl': redirect_url,
             'message': 'Payment initiated successfully'
         })
+        
     except Exception as e:
+        logger.exception(f"Unexpected error in payment endpoint: {str(e)}")
         return jsonify({'error': f'Internal server error: {str(e)}'}), 500
 
 @app.route('/api/pesapal-callback', methods=['POST'])
