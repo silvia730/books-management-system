@@ -389,6 +389,8 @@ function renderGeneralResources(sectionSelector, items, type) {
                 })
                 .then(res => res.json())
                 .then(data => {
+                    console.log('Payment API response:', data); // Debug logging
+                    
                     if (data.success && data.message && data.message.includes('Test payment')) {
                         // Test payment successful
                         document.getElementById('download-modal-message').innerHTML =
@@ -399,6 +401,7 @@ function renderGeneralResources(sectionSelector, items, type) {
                             encodeURIComponent(data.orderTrackingId) + '" target="_blank">Click here to download your resource</a>';
                     } else if (data.payment_url) {
                         // PesaPal payment - redirect to payment page
+                        console.log('Opening PesaPal payment URL:', data.payment_url); // Debug logging
                         window.open(data.payment_url, '_blank');
                         document.getElementById('download-modal-message').innerHTML =
                             'After completing payment, <a href="download-success.html?resource_id=' +
@@ -406,6 +409,7 @@ function renderGeneralResources(sectionSelector, items, type) {
                             encodeURIComponent(downloadFormData.email) + '&orderTrackingId=' +
                             encodeURIComponent(data.orderTrackingId) + '" target="_blank">click here to download your resource</a>.';
                     } else {
+                        console.error('Unexpected payment response:', data); // Debug logging
                         document.getElementById('download-modal-message').textContent = data.error || 'Failed to initiate payment.';
                     }
                 })
@@ -435,6 +439,8 @@ function renderGeneralResources(sectionSelector, items, type) {
             })
             .then(res => res.json())
             .then(data => {
+                console.log('Payment API response (fallback):', data); // Debug logging
+                
                 if (data.success && data.message && data.message.includes('Test payment')) {
                     // Test payment successful
                     document.getElementById('download-modal-message').innerHTML =
@@ -445,6 +451,7 @@ function renderGeneralResources(sectionSelector, items, type) {
                         encodeURIComponent(data.orderTrackingId) + '" target="_blank">Click here to download your resource</a>';
                 } else if (data.payment_url) {
                     // PesaPal payment - redirect to payment page
+                    console.log('Opening PesaPal payment URL (fallback):', data.payment_url); // Debug logging
                     window.open(data.payment_url, '_blank');
                     document.getElementById('download-modal-message').innerHTML =
                         'After completing payment, <a href="download-success.html?resource_id=' +
@@ -452,6 +459,7 @@ function renderGeneralResources(sectionSelector, items, type) {
                         encodeURIComponent(downloadFormData.email) + '&orderTrackingId=' +
                         encodeURIComponent(data.orderTrackingId) + '" target="_blank">click here to download your resource</a>.';
                 } else {
+                    console.error('Unexpected payment response (fallback):', data); // Debug logging
                     document.getElementById('download-modal-message').textContent = data.error || 'Failed to initiate payment.';
                 }
             })

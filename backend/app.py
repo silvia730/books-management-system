@@ -486,7 +486,8 @@ def pay():
         return jsonify({
             'success': True,
             'orderTrackingId': order_tracking_id,
-            'redirectUrl': redirect_url,
+            'payment_url': redirect_url,  # Changed from redirectUrl to payment_url
+            'redirectUrl': redirect_url,  # Keep for backward compatibility
             'message': 'Payment initiated successfully'
         })
         

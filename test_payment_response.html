@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Response Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Payment Response Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Payment Request</h3>
+        <button onclick="testPayment()">Test Payment API</button>
+        <div id="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Expected Response Structure</h3>
+        <pre>{
+  "success": true,
+  "orderTrackingId": "ORDER_1234567890_1234",
+  "payment_url": "https://pay.pesapal.com/iframe/PesapalIframe3/Index?OrderTrackingId=...",
+  "redirectUrl": "https://pay.pesapal.com/iframe/PesapalIframe3/Index?OrderTrackingId=...",
+  "message": "Payment initiated successfully"
+}</pre>
+    </div>
+
+    <script>
+        const API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
+        
+        async function testPayment() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Testing payment API...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/pay`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        resource_id: '1',
+                        email: 'test@example.com',
+                        amount: 100,
+                        name: 'Test User',
+                        phone: '254700000000'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                console.log('Payment API Response:', data);
+                
+                let html = '<h4>Response:</h4>';
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                if (data.success) {
+                    html += '<div class="success">✅ Payment request successful!</div>';
+                    
+                    if (data.payment_url) {
+                        html += '<div class="success">✅ payment_url field found: ' + data.payment_url.substring(0, 50) + '...</div>';
+                    } else {
+                        html += '<div class="error">❌ payment_url field missing!</div>';
+                    }
+                    
+                    if (data.redirectUrl) {
+                        html += '<div class="success">✅ redirectUrl field found (backward compatibility)</div>';
+                    }
+                    
+                    if (data.orderTrackingId) {
+                        html += '<div class="success">✅ orderTrackingId field found: ' + data.orderTrackingId + '</div>';
+                    }
+                } else {
+                    html += '<div class="error">❌ Payment request failed: ' + (data.error || 'Unknown error') + '</div>';
+                }
+                
+                resultDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Test error:', error);
+                resultDiv.innerHTML = '<div class="error">❌ Error: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html> 
