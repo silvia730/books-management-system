@@ -265,7 +265,7 @@ def pay():
         
         # Compose return_url for auto-download
         return_url = (
-            'http://127.0.0.1:5500/user/auto-download.html'
+            'http://localhost:5500/user/auto-download.html'
             f'?resource_id={resource_id}'
             f'&email={user_email}'
             f'&name={name}'
@@ -333,6 +333,81 @@ def pay():
     except Exception as e:
         print('Unexpected error in /api/pay:', str(e))  # Print error to terminal
         logger.exception('Unexpected error in /api/pay: %s', str(e))
+        return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/api/pesapal-callback', methods=['POST'])
+def pesapal_callback():
+    """Handle PesaPal IPN (Instant Payment Notification)"""
+    try:
+        logger.info("PesaPal callback received")
+        data = request.json
+        logger.info(f"Callback data: {data}")
+        
+        # Extract payment information
+        order_tracking_id = data.get('order_tracking_id')
+        transaction_tracking_id = data.get('transaction_tracking_id')
+        payment_status = data.get('payment_status')
+        
+        if not order_tracking_id:
+            logger.error("No order_tracking_id in callback")
+            return jsonify({'error': 'Missing order_tracking_id'}), 400
+        
+        # Find the payment record
+        payment = Payment.query.filter_by(order_tracking_id=order_tracking_id).first()
+        if not payment:
+            logger.error(f"Payment record not found for order: {order_tracking_id}")
+            return jsonify({'error': 'Payment record not found'}), 404
+        
+        # Update payment status
+        if payment_status == 'COMPLETED':
+            payment.status = 'COMPLETED'
+            payment.transaction_tracking_id = transaction_tracking_id
+            payment.ipn_received = True
+            payment.ipn_received_at = datetime.utcnow()
+            db.session.commit()
+            logger.info(f"Payment completed: {order_tracking_id}")
+        elif payment_status in ['FAILED', 'CANCELLED']:
+            payment.status = payment_status
+            payment.ipn_received = True
+            payment.ipn_received_at = datetime.utcnow()
+            db.session.commit()
+            logger.info(f"Payment {payment_status}: {order_tracking_id}")
+        
+        return jsonify({'success': True, 'message': 'Callback processed'})
+        
+    except Exception as e:
+        logger.exception('Error processing PesaPal callback: %s', str(e))
+        return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/api/check-payment', methods=['GET'])
+def check_payment():
+    """Check payment status for a resource and email"""
+    try:
+        resource_id = request.args.get('resource_id')
+        email = request.args.get('email')
+        
+        if not resource_id or not email:
+            return jsonify({'error': 'Missing resource_id or email'}), 400
+        
+        # Find the most recent payment for this resource and email
+        payment = Payment.query.filter_by(
+            resource_id=resource_id,
+            user_email=email
+        ).order_by(Payment.created_at.desc()).first()
+        
+        if not payment:
+            return jsonify({'error': 'Payment record not found'}), 404
+        
+        return jsonify({
+            'success': True,
+            'payment_status': payment.status,
+            'order_tracking_id': payment.order_tracking_id,
+            'amount': payment.amount,
+            'created_at': payment.created_at.isoformat() if payment.created_at else None
+        })
+        
+    except Exception as e:
+        logger.exception('Error checking payment: %s', str(e))
         return jsonify({'error': 'Internal server error'}), 500
 
 @app.route('/api/download/<int:resource_id>', methods=['GET'])

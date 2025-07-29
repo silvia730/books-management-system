@@ -5,48 +5,354 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download Resource | SomaFy</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background: #f5f7fa; text-align: center; padding: 4rem 1rem; }
-        .download-status { font-size: 1.2rem; margin-top: 2rem; }
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .download-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .success-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .success-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        
+        .success-header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .book-details {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        
+        .book-image-container {
+            text-align: center;
+        }
+        
+        .book-image {
+            width: 100%;
+            max-width: 280px;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .book-info h2 {
+            color: #333;
+            margin: 0 0 1rem 0;
+            font-size: 1.8rem;
+        }
+        
+        .book-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .meta-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .meta-value {
+            color: #333;
+            font-size: 1.1rem;
+            margin-top: 0.25rem;
+        }
+        
+        .book-description {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .download-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status-message {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .back-home {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .back-home:hover {
+            color: #764ba2;
+        }
+        
+        @media (max-width: 768px) {
+            .book-details {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .book-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .success-header h1 {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Thank You for Your Payment!</h1>
-    <div class="download-status" id="download-status">Verifying payment and preparing your download...</div>
+    <div class="download-container">
+        <div class="success-header">
+            <h1><i class="fas fa-check-circle"></i> Payment Successful!</h1>
+            <p>Your payment has been confirmed. You can now download your resource.</p>
+        </div>
+        
+        <div class="book-details" id="book-details">
+            <div class="book-image-container">
+                <img src="assets/placeholder.jpg" alt="Book Cover" class="book-image" id="book-image">
+            </div>
+            
+            <div class="book-info">
+                <h2 id="book-title">Loading...</h2>
+                
+                <div class="book-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">Class/Grade</div>
+                        <div class="meta-value" id="book-class">Loading...</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Subject</div>
+                        <div class="meta-value" id="book-subject">Loading...</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Type</div>
+                        <div class="meta-value" id="book-type">Loading...</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Resource ID</div>
+                        <div class="meta-value" id="book-id">Loading...</div>
+                    </div>
+                </div>
+                
+                <div class="book-description" id="book-description">
+                    Loading description...
+                </div>
+            </div>
+        </div>
+        
+        <div class="download-section">
+            <div class="status-message status-loading" id="status-message">
+                <i class="fas fa-spinner fa-spin"></i> Verifying payment and preparing your download...
+            </div>
+            
+            <button class="download-btn" id="download-btn" disabled>
+                <i class="fas fa-download"></i>
+                Download Resource
+            </button>
+            
+            <br>
+            <a href="index.html" class="back-home">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
     <script>
-    function getQueryParam(name) {
-        const url = new URL(window.location.href);
-        return url.searchParams.get(name);
-    }
-    const resourceId = getQueryParam('resource_id');
-    const email = getQueryParam('email');
-    const orderTrackingId = getQueryParam('orderTrackingId');
-    if (resourceId && email && orderTrackingId) {
-        fetch(`https://books-management-system-bcr5.onrender.com/api/download/${resourceId}?email=${encodeURIComponent(email)}&orderTrackingId=${encodeURIComponent(orderTrackingId)}`)
-            .then(res => {
-                if (res.status === 200) {
-                    return res.blob();
-                } else {
-                    throw new Error('Payment not confirmed or file not found.');
-                }
-            })
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
+        const API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
+        
+        function getQueryParam(name) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
+        }
+        
+        function updateStatus(message, type) {
+            const statusEl = document.getElementById('status-message');
+            statusEl.className = `status-message status-${type}`;
+            statusEl.innerHTML = message;
+        }
+        
+        function loadBookDetails() {
+            const resourceId = getQueryParam('resource_id');
+            const email = getQueryParam('email');
+            const orderTrackingId = getQueryParam('orderTrackingId');
+            
+            if (!resourceId || !email || !orderTrackingId) {
+                updateStatus('<i class="fas fa-exclamation-triangle"></i> Missing download information.', 'error');
+                return;
+            }
+            
+            // First, fetch book details
+            fetch(`${API_BASE}/resources/${resourceId}`)
+                .then(res => res.json())
+                .then(book => {
+                    // Update book details
+                    document.getElementById('book-title').textContent = book.title || 'Unknown Title';
+                    document.getElementById('book-class').textContent = book.class_grade || 'Unknown Class';
+                    document.getElementById('book-subject').textContent = book.subject || 'Unknown Subject';
+                    document.getElementById('book-type').textContent = book.resource_type || 'Unknown Type';
+                    document.getElementById('book-id').textContent = book.id || resourceId;
+                    document.getElementById('book-description').textContent = book.description || 'No description available.';
+                    
+                    // Update book image
+                    let coverUrl = 'assets/placeholder.jpg';
+                    if (book.cover && book.cover !== 'null') {
+                        if (book.cover.startsWith('static/covers/')) {
+                            const baseUrl = API_BASE.replace('/api', '');
+                            coverUrl = `${baseUrl}/${book.cover}`;
+                        } else if (book.cover.startsWith('http')) {
+                            coverUrl = book.cover;
+                        } else {
+                            coverUrl = `assets/${book.cover}`;
+                        }
+                    }
+                    document.getElementById('book-image').src = coverUrl;
+                    
+                    // Now verify payment and enable download
+                    return verifyPaymentAndDownload(resourceId, email, orderTrackingId);
+                })
+                .catch(err => {
+                    console.error('Error loading book details:', err);
+                    updateStatus('<i class="fas fa-exclamation-triangle"></i> Error loading book details.', 'error');
+                });
+        }
+        
+        function verifyPaymentAndDownload(resourceId, email, orderTrackingId) {
+            updateStatus('<i class="fas fa-spinner fa-spin"></i> Verifying payment...', 'loading');
+            
+            return fetch(`${API_BASE}/download/${resourceId}?email=${encodeURIComponent(email)}&orderTrackingId=${encodeURIComponent(orderTrackingId)}`)
+                .then(res => {
+                    if (res.status === 200) {
+                        updateStatus('<i class="fas fa-check-circle"></i> Payment verified! Ready to download.', 'success');
+                        document.getElementById('download-btn').disabled = false;
+                        return res.blob();
+                    } else {
+                        throw new Error('Payment not confirmed or file not found.');
+                    }
+                })
+                .then(blob => {
+                    // Store blob for download
+                    window.downloadBlob = blob;
+                    updateStatus('<i class="fas fa-check-circle"></i> Payment verified! Click download to get your resource.', 'success');
+                })
+                .catch(err => {
+                    console.error('Download error:', err);
+                    updateStatus(`<i class="fas fa-exclamation-triangle"></i> ${err.message}`, 'error');
+                });
+        }
+        
+        // Handle download button click
+        document.getElementById('download-btn').addEventListener('click', function() {
+            if (window.downloadBlob) {
+                const url = window.URL.createObjectURL(window.downloadBlob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'resource.pdf'; // You can set the filename dynamically if needed
+                a.download = 'resource.pdf';
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
-                document.getElementById('download-status').textContent = 'Your download should start automatically. If not, click here.';
-                document.getElementById('download-status').innerHTML += `<br><a href="${url}" download>Download Manually</a>`;
-            })
-            .catch(err => {
-                document.getElementById('download-status').textContent = err.message;
-            });
-    } else {
-        document.getElementById('download-status').textContent = 'Missing download information.';
-    }
+                window.URL.revokeObjectURL(url);
+                
+                updateStatus('<i class="fas fa-check-circle"></i> Download started! Check your downloads folder.', 'success');
+            } else {
+                updateStatus('<i class="fas fa-exclamation-triangle"></i> Download not ready. Please refresh the page.', 'error');
+            }
+        });
+        
+        // Load book details when page loads
+        document.addEventListener('DOMContentLoaded', loadBookDetails);
     </script>
 </body>
 </html> 

@@ -13,7 +13,7 @@
     <header>
         <div class="header-container">
             <a href="#" class="logo">
-                <img src="assets/somafy logo.jpg" alt="SomaFy Logo" class="logo-img" style="height:36px;width:auto;vertical-align:middle;margin-right:8px;">
+                <img src="assets/somafy logo.jpg" alt="SomaFy Logo" class="logo-img">
                 <span>SomaFy</span>
             </a>
             <nav>
@@ -26,7 +26,7 @@
                 </ul>
             </nav>
             <div class="user-actions">
-                <a href="#"><i class="fas fa-user"></i> Sign In</a>
+                <a href="#" class="sign-in-link"><i class="fas fa-user"></i> Sign In</a>
                 <a href="#" class="btn btn-outline">Register</a>
             </div>
         </div>
@@ -101,7 +101,12 @@
         <h2 class="section-title">Top Revision Papers & Marking Schemes</h2>
         <div class="revision-slider">
             <div class="slider-container">
-                <!-- Slider items will be added dynamically -->
+                <div class="slider-item">
+                    <img src="assets/exam paper2.jpg" alt="Revision Paper 1" class="slider-image">
+                </div>
+                <div class="slider-item">
+                    <img src="assets/WhatsApp Image 2025-07-21 at 17.39.48_efa085dc.jpg" alt="Revision Paper 2" class="slider-image">
+                </div>
             </div>
             <button class="slider-arrow prev">
                 <i class="fas fa-chevron-left"></i>
@@ -110,7 +115,8 @@
                 <i class="fas fa-chevron-right"></i>
             </button>
             <div class="slider-nav">
-                <!-- Navigation dots will be added dynamically -->
+                <div class="slider-dot active" data-index="0"></div>
+                <div class="slider-dot" data-index="1"></div>
             </div>
         </div>
         <div class="revision-cta">
@@ -118,7 +124,7 @@
         </div>
     </section>
 
-    <!-- General Books Section -->
+    <!-- Popular Learning Resources Section -->
     <section class="books-section">
         <h2 class="section-title">Popular Learning Resources</h2>
         <div class="books-grid">
@@ -143,11 +149,11 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="about-section" style="background:#f5f7fa;padding:3rem 0;">
-        <div class="about-container" style="max-width:900px;margin:0 auto;text-align:center;">
+    <section id="about" class="about-section">
+        <div class="about-container">
             <h2>About SomaFy</h2>
-            <p style="font-size:1.1rem;margin:1.5rem 0;">SomaFy is Kenya's premier educational resource platform, providing students and teachers with access to curriculum-aligned textbooks, revision papers, setbooks, and more. Our mission is to make quality learning materials accessible to all, supporting academic excellence and lifelong learning.</p>
-            <ul style="list-style:none;padding:0;font-size:1.05rem;">
+            <p>SomaFy is Kenya's premier educational resource platform, providing students and teachers with access to curriculum-aligned textbooks, revision papers, setbooks, and more. Our mission is to make quality learning materials accessible to all, supporting academic excellence and lifelong learning.</p>
+            <ul>
                 <li>✔️ Access resources for KCPE, KCSE, and CBC</li>
                 <li>✔️ Download past papers, setbooks, and general books</li>
                 <li>✔️ Easy navigation by class, grade, and subject</li>
@@ -155,25 +161,28 @@
             </ul>
         </div>
     </section>
+
     <!-- Contact Section -->
-    <section id="contact" class="contact-section" style="background:#fff;padding:3rem 0;">
-        <div class="contact-container" style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;gap:2rem;align-items:flex-start;">
-            <div style="flex:1;min-width:260px;">
+    <section id="contact" class="contact-section">
+        <div class="contact-container">
+            <div class="contact-form-section">
                 <h2>Contact Us</h2>
-                <form id="contact-form" style="display:flex;flex-direction:column;gap:1rem;">
+                <form id="contact-form">
                     <input type="text" id="contact-name" placeholder="Your Name" required>
                     <input type="email" id="contact-email" placeholder="Your Email" required>
                     <textarea id="contact-message" placeholder="Your Message" rows="5" required></textarea>
                     <button type="submit" class="btn btn-primary">Send Message</button>
-                    <div id="contact-message-status" style="margin-top:0.5rem;"></div>
+                    <div id="contact-message-status"></div>
                 </form>
             </div>
-            <div style="flex:1;min-width:260px;">
+            <div class="contact-info-section">
                 <h3>Contact Information</h3>
-                <ul style="list-style:none;padding:0;font-size:1.05rem;">
+                <ul class="contact-info-list">
                     <li><i class="fas fa-envelope"></i> info@somafy.co.ke</li>
                     <li><i class="fas fa-phone"></i> +254 700 123 456</li>
                     <li><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</li>
+                    <li><i class="fas fa-clock"></i> Monday-Friday: 8:00 AM - 5:00 PM</li>
+                    <li><i class="fas fa-comments"></i> 24/7 Online Support</li>
                 </ul>
             </div>
         </div>
@@ -200,7 +209,7 @@
                     <li><a href="#papers">Past Papers</a></li>
                     <li><a href="#setbooks">Setbooks</a></li>
                     <li><a href="#">Subjects</a></li>
-                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
                 </ul>
             </div>
             
@@ -214,23 +223,23 @@
                 </ul>
             </div>
             
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <ul class="footer-links">
-                    <li><i class="fas fa-envelope"></i> info@somafy.co.ke</li>
-                    <li><i class="fas fa-phone"></i> +254 700 123 456</li>
-                    <li><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</li>
-                </ul>
+            <div class="footer-section newsletter-section">
+                <h3>Newsletter</h3>
+                <p>Subscribe to get updates on new resources and educational tips.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Your Email" class="newsletter-input">
+                    <button class="btn btn-primary newsletter-btn">Subscribe</button>
+                </div>
             </div>
         </div>
         
         <div class="copyright">
-            <p>&copy; 2023 SomaFy Educational Resources. All rights reserved.</p>
+            <p>&copy; 2025 SomaFy Educational Resources. All rights reserved.</p>
         </div>
     </footer>
 
     <!-- Sign In Modal -->
-    <div id="signin-modal" class="modal" style="display:none;">
+    <div id="signin-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" data-modal="signin-modal">&times;</span>
             <h2>Sign In</h2>
@@ -242,8 +251,9 @@
             <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
         </div>
     </div>
+
     <!-- Register Modal -->
-    <div id="register-modal" class="modal" style="display:none;">
+    <div id="register-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" data-modal="register-modal">&times;</span>
             <h2>Register</h2>
@@ -258,7 +268,7 @@
     </div>
 
     <!-- Download/Payment Modal -->
-    <div id="download-modal" class="modal" style="display:none;">
+    <div id="download-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" data-modal="download-modal">&times;</span>
             <h2>Download Resource</h2>
@@ -268,11 +278,237 @@
                 <input type="tel" id="download-phone" placeholder="Your Phone Number" required>
                 <button type="submit" class="btn btn-primary">Continue</button>
             </form>
-            <div id="download-modal-message" style="margin:1rem 0;"></div>
+            <div id="download-modal-message"></div>
             <button id="download-pesapal-btn" class="btn btn-primary" style="display:none;">Pay with PesaPal</button>
         </div>
     </div>
 
+    <script>
+        // Simple and reliable modal functionality
+        function openModal(modal) {
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modal) {
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal close buttons
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    const modal = document.getElementById(modalId);
+                    if (modal) closeModal(modal);
+                });
+            });
+
+            // Sign In and Register links
+            document.querySelectorAll('.user-actions a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
+                        console.log('Sign In clicked');
+                        openModal(document.getElementById('signin-modal'));
+                    } else if (this.textContent.includes('Register')) {
+                        console.log('Register clicked');
+                        openModal(document.getElementById('register-modal'));
+                    }
+                });
+            });
+
+            // Modal switching
+            const showRegisterLink = document.getElementById('show-register');
+            const showSigninLink = document.getElementById('show-signin');
+            
+            if (showRegisterLink) {
+                showRegisterLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    closeModal(document.getElementById('signin-modal'));
+                    openModal(document.getElementById('register-modal'));
+                });
+            }
+            
+            if (showSigninLink) {
+                showSigninLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    closeModal(document.getElementById('register-modal'));
+                    openModal(document.getElementById('signin-modal'));
+                });
+            }
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target);
+                }
+            });
+
+            // Subject dropdown functionality
+            const classSelect = document.getElementById('class-select');
+            const subjectSelect = document.getElementById('subject-select');
+            
+            if (classSelect && subjectSelect) {
+                classSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        subjectSelect.disabled = false;
+                        let subjects = [];
+                        
+                        if (this.value.includes('pp')) {
+                            // CBC PP1 & PP2 subjects
+                            subjects = [
+                                { value: 'language_activities', label: 'Language Activities' },
+                                { value: 'mathematical_activities', label: 'Mathematical Activities' },
+                                { value: 'environmental_activities', label: 'Environmental Activities' },
+                                { value: 'creative_activities', label: 'Creative Activities' },
+                                { value: 'religious_activities', label: 'Religious Activities' }
+                            ];
+                        } else if (this.value.includes('std')) {
+                            // KCPE subjects (Primary School)
+                            subjects = [
+                                { value: 'english', label: 'English' },
+                                { value: 'kiswahili', label: 'Kiswahili' },
+                                { value: 'mathematics', label: 'Mathematics' },
+                                { value: 'science', label: 'Science' },
+                                { value: 'social_studies', label: 'Social Studies' },
+                                { value: 'religious_education', label: 'Religious Education' }
+                            ];
+                        } else if (this.value.includes('form')) {
+                            // KCSE subjects (Secondary School)
+                            subjects = [
+                                { value: 'english', label: 'English' },
+                                { value: 'kiswahili', label: 'Kiswahili' },
+                                { value: 'mathematics', label: 'Mathematics' },
+                                { value: 'biology', label: 'Biology' },
+                                { value: 'chemistry', label: 'Chemistry' },
+                                { value: 'physics', label: 'Physics' },
+                                { value: 'history', label: 'History' },
+                                { value: 'geography', label: 'Geography' },
+                                { value: 'religious_education', label: 'Religious Education' },
+                                { value: 'business_studies', label: 'Business Studies' },
+                                { value: 'agriculture', label: 'Agriculture' },
+                                { value: 'home_science', label: 'Home Science' },
+                                { value: 'computer_studies', label: 'Computer Studies' }
+                            ];
+                        } else if (this.value.includes('grade')) {
+                            // CBC Grades 1-12 subjects
+                            subjects = [
+                                { value: 'english', label: 'English' },
+                                { value: 'kiswahili', label: 'Kiswahili' },
+                                { value: 'kenya_sign_language', label: 'Kenya Sign Language' },
+                                { value: 'mathematics', label: 'Mathematics' },
+                                { value: 'religious_education', label: 'Religious Education' },
+                                { value: 'environmental_activities', label: 'Environmental Activities' },
+                                { value: 'creative_activities', label: 'Creative Activities' },
+                                { value: 'science_technology', label: 'Science and Technology' },
+                                { value: 'agriculture_nutrition', label: 'Agriculture and Nutrition' },
+                                { value: 'social_studies', label: 'Social Studies' },
+                                { value: 'arts_craft', label: 'Arts and Craft' },
+                                { value: 'music', label: 'Music' },
+                                { value: 'physical_health_education', label: 'Physical and Health Education' },
+                                { value: 'integrated_science', label: 'Integrated Science' },
+                                { value: 'pre_technical_career', label: 'Pre-Technical and Pre-Career Education' },
+                                { value: 'business_studies', label: 'Business Studies' },
+                                { value: 'health_education', label: 'Health Education' },
+                                { value: 'life_skills_education', label: 'Life Skills Education' },
+                                { value: 'computer_science', label: 'Computer Science' },
+                                { value: 'home_science', label: 'Home Science' },
+                                { value: 'community_service_learning', label: 'Community Service Learning' },
+                                { value: 'physics', label: 'Physics' },
+                                { value: 'chemistry', label: 'Chemistry' },
+                                { value: 'biology', label: 'Biology' },
+                                { value: 'fine_art', label: 'Fine Art' },
+                                { value: 'performing_arts', label: 'Performing Arts' },
+                                { value: 'sports_science', label: 'Sports Science' },
+                                { value: 'history', label: 'History' },
+                                { value: 'geography', label: 'Geography' },
+                                { value: 'literature_english', label: 'Literature in English' }
+                            ];
+                        }
+                        
+                        subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+                        subjects.forEach(subject => {
+                            subjectSelect.innerHTML += `<option value="${subject.value}">${subject.label}</option>`;
+                        });
+                    } else {
+                        subjectSelect.disabled = true;
+                        subjectSelect.innerHTML = '<option value="">First select a class/grade</option>';
+                    }
+                });
+            }
+
+            // Find Resources button
+            const findResourcesBtn = document.getElementById('find-resources');
+            if (findResourcesBtn) {
+                findResourcesBtn.addEventListener('click', function() {
+                    const selectedClass = classSelect ? classSelect.value : '';
+                    const selectedSubject = subjectSelect ? subjectSelect.value : '';
+                    
+                    if (!selectedClass) {
+                        alert('Please select a class/grade');
+                        return;
+                    }
+                    
+                    if (!selectedSubject) {
+                        alert('Please select a subject');
+                        return;
+                    }
+                    
+                    // Redirect to resources page with query params
+                    window.location.href = `resources.html?class=${encodeURIComponent(selectedClass)}&subject=${encodeURIComponent(selectedSubject)}`;
+                });
+            }
+
+            // Initialize slider functionality
+            const slider = document.querySelector('.slider-container');
+            const dots = document.querySelectorAll('.slider-dot');
+            const prevBtn = document.querySelector('.slider-arrow.prev');
+            const nextBtn = document.querySelector('.slider-arrow.next');
+            let currentSlide = 0;
+            const slideCount = 2; // Number of slides
+            
+            function goToSlide(index) {
+                currentSlide = index;
+                slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+                
+                // Update active dot
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentSlide);
+                });
+            }
+            
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slideCount;
+                goToSlide(currentSlide);
+            }
+            
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + slideCount) % slideCount;
+                goToSlide(currentSlide);
+            }
+            
+            // Event listeners for slider
+            if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+            if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+            
+            // Dot navigation
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    goToSlide(parseInt(dot.dataset.index));
+                });
+            });
+            
+            // Auto slide every 5 seconds
+            setInterval(nextSlide, 5000);
+        });
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

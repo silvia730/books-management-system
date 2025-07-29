@@ -91,10 +91,20 @@ function createResourceCard(resource) {
     card.className = 'resource-card';
     
     // Use a default image if cover is missing
-    let coverUrl = resource.cover && resource.cover !== 'null' ? resource.cover : 'assets/placeholder.jpg';
-    if (resource.cover && resource.cover.startsWith('static/covers/')) {
-        const baseUrl = API_BASE.replace('/api', '');
-        coverUrl = `${baseUrl}/${resource.cover}`;
+    let coverUrl = 'assets/placeholder.jpg'; // Default fallback
+    
+    if (resource.cover && resource.cover !== 'null') {
+        if (resource.cover.startsWith('static/covers/')) {
+            // Use the deployed API base URL for static files
+            const baseUrl = API_BASE.replace('/api', '');
+            coverUrl = `${baseUrl}/${resource.cover}`;
+        } else if (resource.cover.startsWith('http')) {
+            // Full URL provided
+            coverUrl = resource.cover;
+        } else {
+            // Local asset
+            coverUrl = `assets/${resource.cover}`;
+        }
     }
     
     card.innerHTML = `
@@ -151,6 +161,20 @@ function setupEventListeners() {
             const modalId = this.getAttribute('data-modal');
             const modal = document.getElementById(modalId);
             if (modal) closeModal(modal);
+        });
+    });
+    
+    // Sign In and Register links
+    document.querySelectorAll('.user-actions a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
+                e.preventDefault();
+                openModal(document.getElementById('signin-modal'));
+            }
+            if (this.textContent.includes('Register')) {
+                e.preventDefault();
+                openModal(document.getElementById('register-modal'));
+            }
         });
     });
     
@@ -308,21 +332,17 @@ function checkUserAuth() {
 }
 
 function updateAuthUI() {
-    const authButtons = document.querySelector('.auth-buttons');
-    if (authButtons) {
+    const userActions = document.querySelector('.user-actions');
+    if (userActions) {
         if (currentUser) {
-            authButtons.innerHTML = `
-                <span>Welcome, ${currentUser.username}</span>
-                <button class="btn btn-outline" onclick="signOut()">Sign Out</button>
+            userActions.innerHTML = `
+                <span style="color: #667eea; margin-right: 1rem;">Welcome, ${currentUser.username}</span>
+                <a href="#" class="btn btn-outline" onclick="signOut()">Sign Out</a>
             `;
         } else {
-            authButtons.innerHTML = `
-                <button class="btn btn-outline" onclick="openModal(document.getElementById('signin-modal'))">
-                    <i class="fas fa-user"></i> Sign In
-                </button>
-                <button class="btn btn-primary" onclick="openModal(document.getElementById('register-modal'))">
-                    Register
-                </button>
+            userActions.innerHTML = `
+                <a href="#" class="sign-in-link"><i class="fas fa-user"></i> Sign In</a>
+                <a href="#" class="btn btn-outline">Register</a>
             `;
         }
     }

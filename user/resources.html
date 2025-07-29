@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SomaFy - Learning Resources</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         .resources-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -167,26 +169,24 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <img src="assets/somafy logo.jpg" alt="SomaFy Logo">
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/somafy logo.jpg" alt="SomaFy Logo" class="logo-img">
                 <span>SomaFy</span>
-            </div>
-            <nav class="nav">
-                <a href="index.html">Home</a>
-                <a href="index.html#papers">Papers</a>
-                <a href="index.html#setbooks">Setbooks</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#papers">Papers</a></li>
+                    <li><a href="index.html#setbooks">Setbooks</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
             </nav>
-            <div class="auth-buttons">
-                <button class="btn btn-outline" onclick="openModal(document.getElementById('signin-modal'))">
-                    <i class="fas fa-user"></i> Sign In
-                </button>
-                <button class="btn btn-primary" onclick="openModal(document.getElementById('register-modal'))">
-                    Register
-                </button>
+            <div class="user-actions">
+                <a href="#" class="sign-in-link"><i class="fas fa-user"></i> Sign In</a>
+                <a href="#" class="btn btn-outline">Register</a>
             </div>
         </div>
     </header>

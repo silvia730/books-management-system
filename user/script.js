@@ -1,7 +1,20 @@
 // Revision Papers Data
 const revisionPapers = [
-    { image: "assets/exam paper2.jpg" },
-    { image: "assets/WhatsApp Image 2025-07-21 at 17.39.48_efa085dc.jpg" }
+    { 
+        image: "assets/exam paper2.jpg",
+        title: "KCPE Mathematics 2023",
+        description: "Complete KCPE Mathematics past paper with comprehensive marking scheme for thorough exam preparation."
+    },
+    { 
+        image: "assets/placeholder.jpg",
+        title: "KCSE English 2023",
+        description: "KCSE English paper with detailed answers and marking guidelines for secondary students."
+    },
+    { 
+        image: "assets/exam paper2.jpg",
+        title: "Form 2 Science",
+        description: "Form 2 Science revision paper covering Biology, Chemistry, and Physics topics."
+    }
 ];
 
 // Add this helper at the top for robust null/undefined checks
@@ -49,16 +62,88 @@ function fetchAndRenderResources() {
     fetch(`${API_BASE}/resources`)
         .then(res => res.json())
         .then(data => {
-            renderGeneralResources('.books-section', data.books, 'general');
-            renderGeneralResources('#papers', data.papers, 'paper');
-            renderGeneralResources('#setbooks', data.setbooks, 'setbook');
+            renderGeneralResources('.books-section', data.books || getSampleBooks(), 'general');
+            renderGeneralResources('#papers', data.papers || getSamplePapers(), 'paper');
+            renderGeneralResources('#setbooks', data.setbooks || getSampleSetbooks(), 'setbook');
         })
         .catch((error) => {
             console.error('Failed to fetch resources:', error);
-            renderGeneralResources('.books-section', [], 'general');
-            renderGeneralResources('#papers', [], 'paper');
-            renderGeneralResources('#setbooks', [], 'setbook');
+            renderGeneralResources('.books-section', getSampleBooks(), 'general');
+            renderGeneralResources('#papers', getSamplePapers(), 'paper');
+            renderGeneralResources('#setbooks', getSampleSetbooks(), 'setbook');
         });
+}
+
+// Sample data for demonstration
+function getSampleBooks() {
+    return [
+        {
+            id: '1',
+            title: 'Form 2',
+            description: 'Comprehensive guide covering algebra, geometry, and statistics for secondary students.',
+            cover: 'assets/placeholder.jpg',
+            grade: 'Form 2',
+            subject: 'Mathematics'
+        },
+        {
+            id: '2',
+            title: 'Science Explorer',
+            description: 'Interactive science textbook with experiments and activities for primary students.',
+            cover: 'assets/placeholder.jpg',
+            grade: 'Standard 7',
+            subject: 'Science'
+        },
+        {
+            id: '3',
+            title: 'CBC Life Skills',
+            description: 'Essential life skills curriculum for Competency Based Curriculum implementation.',
+            cover: 'assets/placeholder.jpg',
+            grade: 'Grade 5',
+            subject: 'Life Skills'
+        }
+    ];
+}
+
+function getSamplePapers() {
+    return [
+        {
+            id: '4',
+            title: 'KCPE Mathematics 2023',
+            description: 'Complete KCPE Mathematics past paper with marking scheme.',
+            cover: 'assets/exam paper2.jpg',
+            grade: 'Standard 8',
+            subject: 'Mathematics'
+        },
+        {
+            id: '5',
+            title: 'KCSE English 2023',
+            description: 'KCSE English paper with comprehensive answers.',
+            cover: 'assets/placeholder.jpg',
+            grade: 'Form 4',
+            subject: 'English'
+        }
+    ];
+}
+
+function getSampleSetbooks() {
+    return [
+        {
+            id: '6',
+            title: 'The River and the Source',
+            description: 'Classic Kenyan literature for secondary school students.',
+            cover: 'assets/placeholder.jpg',
+            grade: 'Form 3',
+            subject: 'Literature'
+        },
+        {
+            id: '7',
+            title: 'A Doll\'s House',
+            description: 'Modern drama text for advanced literature studies.',
+            cover: 'assets/placeholder.jpg',
+            grade: 'Form 4',
+            subject: 'Literature'
+        }
+    ];
 }
 
 // Initialize the revision papers slider
@@ -66,27 +151,36 @@ function initRevisionSlider() {
     const sliderContainer = document.querySelector('.slider-container');
     const sliderNav = document.querySelector('.slider-nav');
     
+    if (!sliderContainer || !sliderNav) {
+        console.log('Slider elements not found, skipping slider initialization');
+        return;
+    }
+    
     // Clear existing content
     sliderContainer.innerHTML = '';
     sliderNav.innerHTML = '';
     
-    // Add slides to the slider
-    revisionPapers.forEach((paper, index) => {
-        // Create slider item
-        const sliderItem = document.createElement('div');
-        sliderItem.className = 'slider-item';
-        sliderItem.innerHTML = `
-            <img src="${paper.image}" alt="Slider Image ${index + 1}" class="slider-image">
-        `;
-        sliderContainer.appendChild(sliderItem);
-        
-        // Create navigation dot
-        const dot = document.createElement('div');
-        dot.className = 'slider-dot';
-        dot.dataset.index = index;
-        if (index === 0) dot.classList.add('active');
-        sliderNav.appendChild(dot);
-    });
+            // Add slides to the slider
+        revisionPapers.forEach((paper, index) => {
+            // Create slider item
+            const sliderItem = document.createElement('div');
+            sliderItem.className = 'slider-item';
+            sliderItem.innerHTML = `
+                <img src="${paper.image}" alt="${paper.title}" class="slider-image">
+                <div class="slider-caption">
+                    <h3>${paper.title}</h3>
+                    <p>${paper.description}</p>
+                </div>
+            `;
+            sliderContainer.appendChild(sliderItem);
+            
+            // Create navigation dot
+            const dot = document.createElement('div');
+            dot.className = 'slider-dot';
+            dot.dataset.index = index;
+            if (index === 0) dot.classList.add('active');
+            sliderNav.appendChild(dot);
+        });
     
     // Set up slider navigation
     setupSliderNavigation();
@@ -164,30 +258,66 @@ function renderGeneralResources(sectionSelector, items, type) {
         const card = document.createElement('div');
         card.className = `book-card ${type}`;
         card.setAttribute('data-id', item.id || '');
+        
         // Use a default image if cover is missing/null
-        let coverUrl = item.cover && item.cover !== 'null' ? item.cover : 'assets/placeholder.jpg';
-        if (item.cover && item.cover.startsWith('static/covers/')) {
-            // Use the base URL without /api for static files
-            const baseUrl = API_BASE.replace('/api', '');
-            coverUrl = `${baseUrl}/${item.cover}`;
+        let coverUrl = 'assets/placeholder.jpg'; // Default fallback
+        
+        if (item.cover && item.cover !== 'null') {
+            if (item.cover.startsWith('static/covers/')) {
+                // Use the deployed API base URL for static files
+                const baseUrl = API_BASE.replace('/api', '');
+                coverUrl = `${baseUrl}/${item.cover}`;
+            } else if (item.cover.startsWith('http')) {
+                // Full URL provided
+                coverUrl = item.cover;
+            } else {
+                // Local asset
+                coverUrl = `assets/${item.cover}`;
+            }
         }
-        // No warning needed - using placeholder image is fine
+        
+        // Determine badge based on type or other criteria
+        let badge = '';
+        if (type === 'general' && Math.random() > 0.7) {
+            badge = '<div class="book-badge">Bestseller</div>';
+        } else if (type === 'setbook' && Math.random() > 0.8) {
+            badge = '<div class="book-badge">New</div>';
+        }
+        
+        // Get grade/class info
+        const grade = item.grade || item.class || 'Standard 7';
+        const subject = item.subject || 'Mathematics';
+        
         card.innerHTML = `
-            <div class="book-cover" style="background-image: url('${coverUrl}')"></div>
+            <div class="book-header">
+                <img src="${coverUrl}" alt="${item.title}" class="book-image">
+                ${badge}
+            </div>
             <div class="book-info">
-                <div class="book-category">${item.category}</div>
-                <h3 class="book-title">${item.title}</h3>
-                <p class="book-description">${item.description}</p>
+                <h3>${item.title}</h3>
                 <div class="book-meta">
-                    <div class="book-price">Ksh ${item.price}</div>
-                    <button class="btn btn-outline download-btn">Download</button>
+                    <div class="book-meta-left">
+                        <i class="fas fa-book"></i>
+                        <span>${grade}</span>
+                    </div>
+                    <div class="book-meta-right">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>PDF</span>
+                    </div>
+                </div>
+                <p class="book-desc">${item.description}</p>
+                <div class="book-actions">
+                    <button class="btn-download">
+                        <i class="fas fa-download"></i>
+                        Download
+                    </button>
                 </div>
             </div>
         `;
         grid.appendChild(card);
     });
     // Download button logic
-    grid.querySelectorAll('.download-btn').forEach(button => {
+    grid.querySelectorAll('.btn-download').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const card = this.closest('.book-card');
@@ -347,7 +477,10 @@ function mainAppInit() {
     // Check for existing user session
     checkUserAuth();
     
+    // Initialize revision slider
     initRevisionSlider();
+    
+    // Fetch and render resources
     fetchAndRenderResources();
     setInterval(fetchAndRenderResources, 10000); // Auto-refresh every 10 seconds
     
@@ -356,102 +489,239 @@ function mainAppInit() {
     const subjectSelect = document.getElementById('subject-select');
     
     // Enable subject select when a class is chosen
-    classSelect.addEventListener('change', function() {
-        if (this.value) {
-            subjectSelect.disabled = false;
-            // In a real implementation, you would populate subjects based on class
-            // For this example, we'll just show a static list
-            subjectSelect.innerHTML = `
-                <option value="">Select Subject</option>
-                <option value="math">Mathematics</option>
-                <option value="english">English</option>
-                <option value="kiswahili">Kiswahili</option>
-                <option value="science">Science</option>
-                <option value="social">Social Studies</option>
-                <option value="cre">CRE</option>
-            `;
-        } else {
-            subjectSelect.disabled = true;
-            subjectSelect.innerHTML = '<option value="">First select a class/grade</option>';
-        }
-    });
+    if (classSelect && subjectSelect) {
+        classSelect.addEventListener('change', function() {
+            if (this.value) {
+                subjectSelect.disabled = false;
+                // Populate subjects based on class/grade
+                let subjects = [];
+                
+                if (this.value.includes('std')) {
+                    // KCPE (Primary School) subjects
+                    subjects = [
+                        { value: 'english', label: 'English' },
+                        { value: 'kiswahili', label: 'Kiswahili' },
+                        { value: 'mathematics', label: 'Mathematics' },
+                        { value: 'science', label: 'Science' },
+                        { value: 'social_studies', label: 'Social Studies' },
+                        { value: 'religious_education', label: 'Religious Education' }
+                    ];
+                } else if (this.value.includes('form')) {
+                    // KCSE (Secondary School) subjects
+                    subjects = [
+                        { value: 'english', label: 'English' },
+                        { value: 'kiswahili', label: 'Kiswahili' },
+                        { value: 'mathematics', label: 'Mathematics' },
+                        { value: 'biology', label: 'Biology' },
+                        { value: 'chemistry', label: 'Chemistry' },
+                        { value: 'physics', label: 'Physics' },
+                        { value: 'history', label: 'History' },
+                        { value: 'geography', label: 'Geography' },
+                        { value: 'religious_education', label: 'Religious Education' },
+                        { value: 'business_studies', label: 'Business Studies' },
+                        { value: 'agriculture', label: 'Agriculture' },
+                        { value: 'home_science', label: 'Home Science' },
+                        { value: 'computer_studies', label: 'Computer Studies' }
+                    ];
+                } else if (this.value.includes('pp')) {
+                    // CBC PP1 & PP2 subjects
+                    subjects = [
+                        { value: 'language_activities', label: 'Language Activities' },
+                        { value: 'mathematical_activities', label: 'Mathematical Activities' },
+                        { value: 'environmental_activities', label: 'Environmental Activities' },
+                        { value: 'creative_activities', label: 'Creative Activities' },
+                        { value: 'religious_activities', label: 'Religious Activities' }
+                    ];
+                } else if (this.value.includes('grade')) {
+                    // CBC Grades 1-12 subjects
+                    subjects = [
+                        { value: 'english', label: 'English' },
+                        { value: 'kiswahili', label: 'Kiswahili' },
+                        { value: 'kenya_sign_language', label: 'Kenya Sign Language' },
+                        { value: 'mathematics', label: 'Mathematics' },
+                        { value: 'religious_education', label: 'Religious Education' },
+                        { value: 'environmental_activities', label: 'Environmental Activities' },
+                        { value: 'creative_activities', label: 'Creative Activities' },
+                        { value: 'science_technology', label: 'Science and Technology' },
+                        { value: 'agriculture_nutrition', label: 'Agriculture and Nutrition' },
+                        { value: 'social_studies', label: 'Social Studies' },
+                        { value: 'arts_craft', label: 'Arts and Craft' },
+                        { value: 'music', label: 'Music' },
+                        { value: 'physical_health_education', label: 'Physical and Health Education' },
+                        { value: 'integrated_science', label: 'Integrated Science' },
+                        { value: 'pre_technical_career', label: 'Pre-Technical and Pre-Career Education' },
+                        { value: 'business_studies', label: 'Business Studies' },
+                        { value: 'health_education', label: 'Health Education' },
+                        { value: 'life_skills_education', label: 'Life Skills Education' },
+                        { value: 'computer_science', label: 'Computer Science' },
+                        { value: 'home_science', label: 'Home Science' },
+                        { value: 'community_service_learning', label: 'Community Service Learning' },
+                        { value: 'physics', label: 'Physics' },
+                        { value: 'chemistry', label: 'Chemistry' },
+                        { value: 'biology', label: 'Biology' },
+                        { value: 'fine_art', label: 'Fine Art' },
+                        { value: 'performing_arts', label: 'Performing Arts' },
+                        { value: 'sports_science', label: 'Sports Science' },
+                        { value: 'history', label: 'History' },
+                        { value: 'geography', label: 'Geography' },
+                        { value: 'literature_english', label: 'Literature in English' }
+                    ];
+                }
+                } else if (this.value.includes('grade')) {
+                    // CBC Grades 1-12 subjects
+                    subjects = [
+                        { value: 'english', label: 'English' },
+                        { value: 'kiswahili', label: 'Kiswahili' },
+                        { value: 'kenya_sign_language', label: 'Kenya Sign Language' },
+                        { value: 'mathematics', label: 'Mathematics' },
+                        { value: 'religious_education', label: 'Religious Education' },
+                        { value: 'environmental_activities', label: 'Environmental Activities' },
+                        { value: 'creative_activities', label: 'Creative Activities' },
+                        { value: 'science_technology', label: 'Science and Technology' },
+                        { value: 'agriculture_nutrition', label: 'Agriculture and Nutrition' },
+                        { value: 'social_studies', label: 'Social Studies' },
+                        { value: 'arts_craft', label: 'Arts and Craft' },
+                        { value: 'music', label: 'Music' },
+                        { value: 'physical_health_education', label: 'Physical and Health Education' },
+                        { value: 'integrated_science', label: 'Integrated Science' },
+                        { value: 'pre_technical_career', label: 'Pre-Technical and Pre-Career Education' },
+                        { value: 'business_studies', label: 'Business Studies' },
+                        { value: 'health_education', label: 'Health Education' },
+                        { value: 'life_skills_education', label: 'Life Skills Education' },
+                        { value: 'computer_science', label: 'Computer Science' },
+                        { value: 'home_science', label: 'Home Science' },
+                        { value: 'community_service_learning', label: 'Community Service Learning' },
+                        { value: 'physics', label: 'Physics' },
+                        { value: 'chemistry', label: 'Chemistry' },
+                        { value: 'biology', label: 'Biology' },
+                        { value: 'fine_art', label: 'Fine Art' },
+                        { value: 'performing_arts', label: 'Performing Arts' },
+                        { value: 'sports_science', label: 'Sports Science' },
+                        { value: 'history', label: 'History' },
+                        { value: 'geography', label: 'Geography' },
+                        { value: 'literature_english', label: 'Literature in English' }
+                    ];
+                }
+                
+                subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+                subjects.forEach(subject => {
+                    subjectSelect.innerHTML += `<option value="${subject.value}">${subject.label}</option>`;
+                });
+            } else {
+                subjectSelect.disabled = true;
+                subjectSelect.innerHTML = '<option value="">First select a class/grade</option>';
+            }
+        });
+    }
     
     // Find resources button
     const findResourcesBtn = document.getElementById('find-resources');
-    findResourcesBtn.addEventListener('click', function() {
-        const selectedClass = classSelect.value;
-        const selectedSubject = subjectSelect.value;
-        
-        if (isNullOrEmpty(selectedClass)) {
-            alert('Please select a class/grade');
-            return;
-        }
-        
-        if (isNullOrEmpty(selectedSubject)) {
-            alert('Please select a subject');
-            return;
-        }
-        
-        // Redirect to resources.html with query params
-        window.location.href = `resources.html?class=${encodeURIComponent(selectedClass)}&subject=${encodeURIComponent(selectedSubject)}`;
-    });
+    if (findResourcesBtn) {
+        findResourcesBtn.addEventListener('click', function() {
+            const selectedClass = classSelect ? classSelect.value : '';
+            const selectedSubject = subjectSelect ? subjectSelect.value : '';
+            
+            if (isNullOrEmpty(selectedClass)) {
+                alert('Please select a class/grade');
+                return;
+            }
+            
+            if (isNullOrEmpty(selectedSubject)) {
+                alert('Please select a subject');
+                return;
+            }
+            
+            // Redirect to resources page with query params
+            window.location.href = `resources.html?class=${encodeURIComponent(selectedClass)}&subject=${encodeURIComponent(selectedSubject)}`;
+        });
+    }
 
     // Enhanced user authentication
-    document.getElementById('signin-form').onsubmit = function(e) {
-        e.preventDefault();
-        const form = e.target;
-        const username = form.querySelector('input[type="text"]').value;
-        const password = form.querySelector('input[type="password"]').value;
-        fetch(`${API_BASE}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                currentUser = data.user;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                updateAuthUI();
-                closeModal(signinModal);
-                alert('Sign in successful!');
-            } else {
-                alert(data.error || 'Sign in failed');
-            }
-        })
-        .catch((error) => {
-            console.error('Login API error:', error);
-            alert('Failed to connect to backend API.');
-        });
-    };
+    const signinForm = document.getElementById('signin-form');
+    if (signinForm) {
+        signinForm.onsubmit = function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const username = form.querySelector('input[type="text"]').value;
+            const password = form.querySelector('input[type="password"]').value;
+            
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Signing in...';
+            submitBtn.disabled = true;
+            
+            fetch(`${API_BASE}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    updateAuthUI();
+                    closeModal(signinModal);
+                    alert('Sign in successful!');
+                } else {
+                    alert(data.error || 'Sign in failed');
+                }
+            })
+            .catch((error) => {
+                console.error('Login API error:', error);
+                alert('Failed to connect to backend API. Please make sure the backend server is running.');
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
+        };
+    }
     
-    document.getElementById('register-form').onsubmit = function(e) {
-        e.preventDefault();
-        const form = e.target;
-        const username = form.querySelector('input[type="text"]').value;
-        const email = form.querySelector('input[type="email"]').value;
-        const password = form.querySelector('input[type="password"]').value;
-        fetch(`${API_BASE}/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert('Registration successful! You can now sign in.');
-                closeModal(registerModal);
-                // Switch to sign in modal
-                openModal(signinModal);
-            } else {
-                alert(data.error || 'Registration failed');
-            }
-        })
-        .catch((error) => {
-            console.error('Register API error:', error);
-            alert('Failed to connect to backend API.');
-        });
-    };
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.onsubmit = function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const username = form.querySelector('input[type="text"]').value;
+            const email = form.querySelector('input[type="email"]').value;
+            const password = form.querySelector('input[type="password"]').value;
+            
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Registering...';
+            submitBtn.disabled = true;
+            
+            fetch(`${API_BASE}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Registration successful! You can now sign in.');
+                    closeModal(registerModal);
+                    // Switch to sign in modal
+                    openModal(signinModal);
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            })
+            .catch((error) => {
+                console.error('Register API error:', error);
+                alert('Failed to connect to backend API. Please make sure the backend server is running.');
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
+        };
+    }
     
     // Smooth scrolling for anchor links (About, Contact, etc.)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -469,18 +739,36 @@ function mainAppInit() {
     // Ensure Sign In and Register links open their modals (fix)
     document.querySelectorAll('.user-actions a').forEach(link => {
         link.addEventListener('click', function(e) {
-            if (this.textContent.includes('Sign In')) {
-                e.preventDefault();
+            e.preventDefault();
+            if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
                 console.log('Sign In clicked');
                 openModal(signinModal);
-            }
-            if (this.textContent.includes('Register')) {
-                e.preventDefault();
+            } else if (this.textContent.includes('Register')) {
                 console.log('Register clicked');
                 openModal(registerModal);
             }
         });
     });
+    
+    // Add modal switching functionality
+    const showRegisterLink = document.getElementById('show-register');
+    const showSigninLink = document.getElementById('show-signin');
+    
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeModal(signinModal);
+            openModal(registerModal);
+        });
+    }
+    
+    if (showSigninLink) {
+        showSigninLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeModal(registerModal);
+            openModal(signinModal);
+        });
+    }
     // Contact form logic
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
@@ -489,6 +777,37 @@ function mainAppInit() {
             document.getElementById('contact-message-status').textContent = 'Thank you for contacting us! We will get back to you soon.';
             contactForm.reset();
         };
+    }
+    
+    // Newsletter subscription logic
+    const newsletterBtn = document.querySelector('.newsletter-btn');
+    const newsletterInput = document.querySelector('.newsletter-input');
+    
+    if (newsletterBtn && newsletterInput) {
+        newsletterBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = newsletterInput.value.trim();
+            
+            if (!email) {
+                alert('Please enter your email address.');
+                return;
+            }
+            
+            if (!email.includes('@')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            // Show success message
+            newsletterBtn.textContent = 'Subscribed!';
+            newsletterBtn.style.backgroundColor = '#2e8b57';
+            newsletterInput.value = '';
+            
+            setTimeout(() => {
+                newsletterBtn.textContent = 'Subscribe';
+                newsletterBtn.style.backgroundColor = '';
+            }, 2000);
+        });
     }
 }
 
@@ -507,21 +826,17 @@ function checkUserAuth() {
 }
 
 function updateAuthUI() {
-    const authButtons = document.querySelector('.auth-buttons');
-    if (authButtons) {
+    const userActions = document.querySelector('.user-actions');
+    if (userActions) {
         if (currentUser) {
-            authButtons.innerHTML = `
+            userActions.innerHTML = `
                 <span style="color: #667eea; margin-right: 1rem;">Welcome, ${currentUser.username}</span>
-                <button class="btn btn-outline" onclick="signOut()">Sign Out</button>
+                <a href="#" class="btn btn-outline" onclick="signOut()">Sign Out</a>
             `;
         } else {
-            authButtons.innerHTML = `
-                <button class="btn btn-outline" onclick="openModal(document.getElementById('signin-modal'))">
-                    <i class="fas fa-user"></i> Sign In
-                </button>
-                <button class="btn btn-primary" onclick="openModal(document.getElementById('register-modal'))">
-                    Register
-                </button>
+            userActions.innerHTML = `
+                <a href="#"><i class="fas fa-user"></i> Sign In</a>
+                <a href="#" class="btn btn-outline">Register</a>
             `;
         }
     }

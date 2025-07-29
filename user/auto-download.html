@@ -84,17 +84,28 @@
         }
 
         function checkPaymentAndDownload() {
-            // For now, we'll simulate a successful payment check
-            // In a real implementation, you would check the payment status with your backend
-            setTimeout(() => {
-                document.getElementById('status').textContent = 'Payment verified! Your download is ready.';
-                document.getElementById('download-section').style.display = 'block';
-                
-                // Set up download link
-                const downloadLink = document.getElementById('download-link');
-                downloadLink.href = `download-success.html?resource_id=${encodeURIComponent(resourceId)}&email=${encodeURIComponent(email)}&orderTrackingId=pesapal_${Date.now()}`;
-                downloadLink.target = '_blank';
-            }, 2000);
+            // Check payment status with the backend
+            fetch(`http://localhost:5000/api/check-payment?resource_id=${encodeURIComponent(resourceId)}&email=${encodeURIComponent(email)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.payment_status === 'COMPLETED') {
+                        document.getElementById('status').textContent = 'Payment verified! Your download is ready.';
+                        document.getElementById('download-section').style.display = 'block';
+                        
+                        // Set up download link
+                        const downloadLink = document.getElementById('download-link');
+                        downloadLink.href = `download-success.html?resource_id=${encodeURIComponent(resourceId)}&email=${encodeURIComponent(email)}&orderTrackingId=${encodeURIComponent(data.order_tracking_id)}`;
+                        downloadLink.target = '_blank';
+                    } else {
+                        document.getElementById('status').textContent = 'Payment verification failed. Please contact support.';
+                        document.getElementById('error-section').style.display = 'block';
+                    }
+                })
+                .catch(err => {
+                    console.error('Payment check error:', err);
+                    document.getElementById('status').textContent = 'Unable to verify payment. Please try again or contact support.';
+                    document.getElementById('error-section').style.display = 'block';
+                });
         }
     </script>
 </body>
