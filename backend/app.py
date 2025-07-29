@@ -136,6 +136,70 @@ def create_payment_record(order_tracking_id, resource_id, user_email, amount, st
 def index():
     return "Welcome to the Books Management System API!"
 
+@app.route('/admin')
+def admin_dashboard():
+    """Serve the admin dashboard"""
+    try:
+        admin_path = os.path.join(os.path.dirname(__file__), '..', 'admin', 'admin.html')
+        if os.path.exists(admin_path):
+            return send_file(admin_path)
+        else:
+            return "Admin dashboard not found. Please check the file path.", 404
+    except Exception as e:
+        logger.error(f"Error serving admin dashboard: {str(e)}")
+        return "Error serving admin dashboard", 500
+
+@app.route('/admin/<path:filename>')
+def admin_static(filename):
+    """Serve admin static files (CSS, JS, images)"""
+    try:
+        admin_dir = os.path.join(os.path.dirname(__file__), '..', 'admin')
+        file_path = os.path.join(admin_dir, filename)
+        
+        # Security check - ensure file is within admin directory
+        if not os.path.abspath(file_path).startswith(os.path.abspath(admin_dir)):
+            return "Access denied", 403
+            
+        if os.path.exists(file_path):
+            return send_file(file_path)
+        else:
+            return f"File not found: {filename}", 404
+    except Exception as e:
+        logger.error(f"Error serving admin static file {filename}: {str(e)}")
+        return "Error serving file", 500
+
+@app.route('/user')
+def user_dashboard():
+    """Serve the user dashboard"""
+    try:
+        user_path = os.path.join(os.path.dirname(__file__), '..', 'user', 'index.html')
+        if os.path.exists(user_path):
+            return send_file(user_path)
+        else:
+            return "User dashboard not found. Please check the file path.", 404
+    except Exception as e:
+        logger.error(f"Error serving user dashboard: {str(e)}")
+        return "Error serving user dashboard", 500
+
+@app.route('/user/<path:filename>')
+def user_static(filename):
+    """Serve user static files (CSS, JS, images)"""
+    try:
+        user_dir = os.path.join(os.path.dirname(__file__), '..', 'user')
+        file_path = os.path.join(user_dir, filename)
+        
+        # Security check - ensure file is within user directory
+        if not os.path.abspath(file_path).startswith(os.path.abspath(user_dir)):
+            return "Access denied", 403
+            
+        if os.path.exists(file_path):
+            return send_file(file_path)
+        else:
+            return f"File not found: {filename}", 404
+    except Exception as e:
+        logger.error(f"Error serving user static file {filename}: {str(e)}")
+        return "Error serving file", 500
+
 @app.route('/api/upload', methods=['POST'])
 def upload_resource():
     resource_type = request.form.get('resourceType')
