@@ -1,19 +1,13 @@
 // Revision Papers Data
 const revisionPapers = [
     { 
-        image: "assets/exam paper2.jpg",
-        title: "KCPE Mathematics 2023",
-        description: "Complete KCPE Mathematics past paper with comprehensive marking scheme for thorough exam preparation."
+        image: "assets/exam paper2.jpg"
     },
     { 
-        image: "assets/placeholder.jpg",
-        title: "KCSE English 2023",
-        description: "KCSE English paper with detailed answers and marking guidelines for secondary students."
+        image: "assets/WhatsApp Image 2025-07-21 at 17.39.48_efa085dc.jpg"
     },
     { 
-        image: "assets/exam paper2.jpg",
-        title: "Form 2 Science",
-        description: "Form 2 Science revision paper covering Biology, Chemistry, and Physics topics."
+        image: "assets/exam paper2.jpg"
     }
 ];
 
@@ -183,11 +177,7 @@ function initRevisionSlider() {
             const sliderItem = document.createElement('div');
             sliderItem.className = 'slider-item';
             sliderItem.innerHTML = `
-                <img src="${paper.image}" alt="${paper.title}" class="slider-image">
-                <div class="slider-caption">
-                    <h3>${paper.title}</h3>
-                    <p>${paper.description}</p>
-                </div>
+                <img src="${paper.image}" alt="Educational Resource" class="slider-image">
             `;
             sliderContainer.appendChild(sliderItem);
             
@@ -727,72 +717,72 @@ function mainAppInit() {
                 if (this.value.includes('std')) {
                     // KCPE (Primary School) subjects
                     subjects = [
-                        { value: 'english', label: 'English' },
-                        { value: 'kiswahili', label: 'Kiswahili' },
-                        { value: 'mathematics', label: 'Mathematics' },
-                        { value: 'science', label: 'Science' },
-                        { value: 'social_studies', label: 'Social Studies' },
-                        { value: 'religious_education', label: 'Religious Education' }
+                        { value: 'English', label: 'English' },
+                        { value: 'Kiswahili', label: 'Kiswahili' },
+                        { value: 'Mathematics', label: 'Mathematics' },
+                        { value: 'Science', label: 'Science' },
+                        { value: 'Social Studies', label: 'Social Studies' },
+                        { value: 'Religious Education', label: 'Religious Education' }
                     ];
                 } else if (this.value.includes('form')) {
                     // KCSE (Secondary School) subjects
                     subjects = [
-                        { value: 'english', label: 'English' },
-                        { value: 'kiswahili', label: 'Kiswahili' },
-                        { value: 'mathematics', label: 'Mathematics' },
-                        { value: 'biology', label: 'Biology' },
-                        { value: 'chemistry', label: 'Chemistry' },
-                        { value: 'physics', label: 'Physics' },
-                        { value: 'history', label: 'History' },
-                        { value: 'geography', label: 'Geography' },
-                        { value: 'religious_education', label: 'Religious Education' },
-                        { value: 'business_studies', label: 'Business Studies' },
-                        { value: 'agriculture', label: 'Agriculture' },
-                        { value: 'home_science', label: 'Home Science' },
-                        { value: 'computer_studies', label: 'Computer Studies' }
+                        { value: 'English', label: 'English' },
+                        { value: 'Kiswahili', label: 'Kiswahili' },
+                        { value: 'Mathematics', label: 'Mathematics' },
+                        { value: 'Biology', label: 'Biology' },
+                        { value: 'Chemistry', label: 'Chemistry' },
+                        { value: 'Physics', label: 'Physics' },
+                        { value: 'History', label: 'History' },
+                        { value: 'Geography', label: 'Geography' },
+                        { value: 'Religious Education', label: 'Religious Education' },
+                        { value: 'Business Studies', label: 'Business Studies' },
+                        { value: 'Agriculture', label: 'Agriculture' },
+                        { value: 'Home Science', label: 'Home Science' },
+                        { value: 'Computer Studies', label: 'Computer Studies' }
                     ];
                 } else if (this.value.includes('pp')) {
                     // CBC PP1 & PP2 subjects
                     subjects = [
-                        { value: 'language_activities', label: 'Language Activities' },
-                        { value: 'mathematical_activities', label: 'Mathematical Activities' },
-                        { value: 'environmental_activities', label: 'Environmental Activities' },
-                        { value: 'creative_activities', label: 'Creative Activities' },
-                        { value: 'religious_activities', label: 'Religious Activities' }
+                        { value: 'Language Activities', label: 'Language Activities' },
+                        { value: 'Mathematical Activities', label: 'Mathematical Activities' },
+                        { value: 'Environmental Activities', label: 'Environmental Activities' },
+                        { value: 'Creative Activities', label: 'Creative Activities' },
+                        { value: 'Religious Activities', label: 'Religious Activities' }
                     ];
                 } else if (this.value.includes('grade')) {
                     // CBC Grades 1-12 subjects
                     subjects = [
-                        { value: 'english', label: 'English' },
-                        { value: 'kiswahili', label: 'Kiswahili' },
-                        { value: 'kenya_sign_language', label: 'Kenya Sign Language' },
-                        { value: 'mathematics', label: 'Mathematics' },
-                        { value: 'religious_education', label: 'Religious Education' },
-                        { value: 'environmental_activities', label: 'Environmental Activities' },
-                        { value: 'creative_activities', label: 'Creative Activities' },
-                        { value: 'science_technology', label: 'Science and Technology' },
-                        { value: 'agriculture_nutrition', label: 'Agriculture and Nutrition' },
-                        { value: 'social_studies', label: 'Social Studies' },
-                        { value: 'arts_craft', label: 'Arts and Craft' },
-                        { value: 'music', label: 'Music' },
-                        { value: 'physical_health_education', label: 'Physical and Health Education' },
-                        { value: 'integrated_science', label: 'Integrated Science' },
-                        { value: 'pre_technical_career', label: 'Pre-Technical and Pre-Career Education' },
-                        { value: 'business_studies', label: 'Business Studies' },
-                        { value: 'health_education', label: 'Health Education' },
-                        { value: 'life_skills_education', label: 'Life Skills Education' },
-                        { value: 'computer_science', label: 'Computer Science' },
-                        { value: 'home_science', label: 'Home Science' },
-                        { value: 'community_service_learning', label: 'Community Service Learning' },
-                        { value: 'physics', label: 'Physics' },
-                        { value: 'chemistry', label: 'Chemistry' },
-                        { value: 'biology', label: 'Biology' },
-                        { value: 'fine_art', label: 'Fine Art' },
-                        { value: 'performing_arts', label: 'Performing Arts' },
-                        { value: 'sports_science', label: 'Sports Science' },
-                        { value: 'history', label: 'History' },
-                        { value: 'geography', label: 'Geography' },
-                        { value: 'literature_english', label: 'Literature in English' }
+                        { value: 'English', label: 'English' },
+                        { value: 'Kiswahili', label: 'Kiswahili' },
+                        { value: 'Kenya Sign Language', label: 'Kenya Sign Language' },
+                        { value: 'Mathematics', label: 'Mathematics' },
+                        { value: 'Religious Education', label: 'Religious Education' },
+                        { value: 'Environmental Activities', label: 'Environmental Activities' },
+                        { value: 'Creative Activities', label: 'Creative Activities' },
+                        { value: 'Science and Technology', label: 'Science and Technology' },
+                        { value: 'Agriculture and Nutrition', label: 'Agriculture and Nutrition' },
+                        { value: 'Social Studies', label: 'Social Studies' },
+                        { value: 'Arts and Craft', label: 'Arts and Craft' },
+                        { value: 'Music', label: 'Music' },
+                        { value: 'Physical and Health Education', label: 'Physical and Health Education' },
+                        { value: 'Integrated Science', label: 'Integrated Science' },
+                        { value: 'Pre-Technical and Pre-Career Education', label: 'Pre-Technical and Pre-Career Education' },
+                        { value: 'Business Studies', label: 'Business Studies' },
+                        { value: 'Health Education', label: 'Health Education' },
+                        { value: 'Life Skills Education', label: 'Life Skills Education' },
+                        { value: 'Computer Science', label: 'Computer Science' },
+                        { value: 'Home Science', label: 'Home Science' },
+                        { value: 'Community Service Learning', label: 'Community Service Learning' },
+                        { value: 'Physics', label: 'Physics' },
+                        { value: 'Chemistry', label: 'Chemistry' },
+                        { value: 'Biology', label: 'Biology' },
+                        { value: 'Fine Art', label: 'Fine Art' },
+                        { value: 'Performing Arts', label: 'Performing Arts' },
+                        { value: 'Sports Science', label: 'Sports Science' },
+                        { value: 'History', label: 'History' },
+                        { value: 'Geography', label: 'Geography' },
+                        { value: 'Literature in English', label: 'Literature in English' }
                     ];
                 }
                 
@@ -812,7 +802,7 @@ function mainAppInit() {
     }
     
     // Find Resources button functionality
-    const findResourcesBtn = document.getElementById('find-resources-btn');
+    const findResourcesBtn = document.getElementById('find-resources');
     if (findResourcesBtn) {
         findResourcesBtn.addEventListener('click', function() {
             const selectedClass = classSelect ? classSelect.value : '';

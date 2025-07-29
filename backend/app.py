@@ -171,11 +171,39 @@ def upload_resource():
 @app.route('/api/resources', methods=['GET'])
 def get_resources():
     try:
+        # Get query parameters for filtering
+        selected_class = request.args.get('class')
+        selected_subject = request.args.get('subject')
+        
+        # Start with base query
+        query = Resource.query
+        
+        # Apply filters if provided
+        if selected_class:
+            query = query.filter(Resource.class_grade == selected_class)
+        if selected_subject:
+            # Handle different subject name formats (with underscores, hyphens, spaces)
+            # Convert the selected subject to match the stored format
+            subject_variations = [
+                selected_subject,
+                selected_subject.replace('_', ' ').replace('-', ' '),
+                selected_subject.replace('_', '-'),
+                selected_subject.replace('-', '_'),
+                selected_subject.replace(' ', '_'),
+                selected_subject.replace(' ', '-')
+            ]
+            query = query.filter(Resource.subject.in_(subject_variations))
+        
+        # Get all filtered resources
+        all_resources = query.all()
+        
+        # Also get resources by type for backward compatibility
         books = Resource.query.filter_by(resource_type='book').all()
         papers = Resource.query.filter_by(resource_type='paper').all()
         setbooks = Resource.query.filter_by(resource_type='setbook').all()
         
         return jsonify({
+            'all': [r.to_dict() for r in all_resources],  # New filtered results
             'books': [b.to_dict() for b in books],
             'papers': [p.to_dict() for p in papers],
             'setbooks': [s.to_dict() for s in setbooks]

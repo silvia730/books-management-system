@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Slider Fixes - SomaFy</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        .warning { color: #ffc107; }
+        
+        .slider-preview {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .image-test {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .image-item {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .image-item img {
+            max-width: 200px;
+            max-height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .admin-preview {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #34495e;
+            border-radius: 6px;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #B22222;
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .logout-btn:hover {
+            background-color: #8b0000;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(178, 34, 34, 0.3);
+        }
+        
+        .admin-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .admin-menu li {
+            padding: 10px;
+            border-bottom: 1px solid #34495e;
+        }
+        
+        .admin-menu li:last-child {
+            border-bottom: none;
+        }
+        
+        .admin-menu a {
+            color: #bdc3c7;
+            text-decoration: none;
+        }
+        
+        .admin-menu a:hover {
+            color: white;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <h1>🧪 Test Slider Fixes - SomaFy</h1>
+    
+    <div class="test-section">
+        <h3>🖼️ Slider Image Test</h3>
+        <p>Testing the slider images and removing descriptions:</p>
+        
+        <div class="slider-preview">
+            <h4>Expected Slider Images:</h4>
+            <div class="image-test">
+                <div class="image-item">
+                    <h5>Image 1</h5>
+                    <img src="user/assets/exam paper2.jpg" alt="Exam Paper" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <p style="display:none; color:red;">❌ Image not found: exam paper2.jpg</p>
+                </div>
+                <div class="image-item">
+                    <h5>Image 2 (WhatsApp)</h5>
+                    <img src="user/assets/WhatsApp Image 2025-07-21 at 17.39.48_efa085dc.jpg" alt="WhatsApp Image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <p style="display:none; color:red;">❌ Image not found: WhatsApp Image 2025-07-21 at 17.39.48_efa085dc.jpg</p>
+                </div>
+                <div class="image-item">
+                    <h5>Image 3</h5>
+                    <img src="user/assets/exam paper2.jpg" alt="Exam Paper" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <p style="display:none; color:red;">❌ Image not found: exam paper2.jpg</p>
+                </div>
+            </div>
+        </div>
+        
+        <button onclick="testSliderImages()">Test Slider Images</button>
+        <div id="slider-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🚪 Admin Logout Button Test</h3>
+        <p>Testing that logout button is only in headers, not in sidebar:</p>
+        
+        <div class="admin-preview">
+            <h4>Admin Dashboard Preview:</h4>
+            
+            <!-- Header with logout button (CORRECT) -->
+            <div class="admin-header">
+                <h1>Dashboard</h1>
+                <div class="admin-actions">
+                    <span><i class="fas fa-bell"></i></span>
+                    <span><i class="fas fa-user-circle"></i> Admin User</span>
+                    <a href="#" id="admin-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+            
+            <!-- Sidebar without logout button (CORRECT) -->
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <h5>Sidebar Menu:</h5>
+                    <ul class="admin-menu">
+                        <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="#"><i class="fas fa-upload"></i> Upload Resources</a></li>
+                        <li><a href="#"><i class="fas fa-book"></i> Books</a></li>
+                        <li><a href="#"><i class="fas fa-file-alt"></i> Papers</a></li>
+                        <li><a href="#"><i class="fas fa-book-reader"></i> Setbooks</a></li>
+                        <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                        <!-- No logout button here - CORRECT -->
+                    </ul>
+                </div>
+                
+                <div style="flex: 2;">
+                    <h5>Main Content Area</h5>
+                    <p>This is where the main content would appear.</p>
+                </div>
+            </div>
+        </div>
+        
+        <button onclick="testLogoutButton()">Test Logout Button Placement</button>
+        <div id="logout-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>📋 Test Summary</h3>
+        <div id="test-summary">
+            <p class="info">Run the tests above to see results...</p>
+        </div>
+    </div>
+
+    <script>
+        function testSliderImages() {
+            const resultsDiv = document.getElementById('slider-results');
+            resultsDiv.innerHTML = '<p class="info">Testing slider images...</p>';
+            
+            const images = [
+                'user/assets/exam paper2.jpg',
+                'user/assets/WhatsApp Image 2025-07-21 at 17.39.48_efa085dc.jpg',
+                'user/assets/exam paper2.jpg'
+            ];
+            
+            let allImagesFound = true;
+            let results = [];
+            
+            images.forEach((src, index) => {
+                const img = new Image();
+                img.onload = function() {
+                    results[index] = `✅ Image ${index + 1} loaded successfully: ${src}`;
+                    checkAllResults();
+                };
+                img.onerror = function() {
+                    results[index] = `❌ Image ${index + 1} failed to load: ${src}`;
+                    allImagesFound = false;
+                    checkAllResults();
+                };
+                img.src = src;
+            });
+            
+            function checkAllResults() {
+                if (results.length === images.length) {
+                    let html = '<h5>Image Test Results:</h5>';
+                    results.forEach(result => {
+                        html += `<p>${result}</p>`;
+                    });
+                    
+                    if (allImagesFound) {
+                        html += '<p class="success">✅ All slider images are working correctly!</p>';
+                        updateTestSummary('slider', 'success');
+                    } else {
+                        html += '<p class="error">❌ Some slider images are missing</p>';
+                        updateTestSummary('slider', 'error');
+                    }
+                    
+                    resultsDiv.innerHTML = html;
+                }
+            }
+        }
+        
+        function testLogoutButton() {
+            const resultsDiv = document.getElementById('logout-results');
+            resultsDiv.innerHTML = '<p class="info">Testing logout button placement...</p>';
+            
+            // Simulate checking the admin page structure
+            setTimeout(() => {
+                const headerLogout = document.querySelector('.admin-header #admin-logout');
+                const sidebarLogout = document.querySelector('.admin-menu #admin-logout');
+                
+                let html = '<h5>Logout Button Test Results:</h5>';
+                
+                if (headerLogout) {
+                    html += '<p class="success">✅ Logout button found in header (CORRECT)</p>';
+                } else {
+                    html += '<p class="error">❌ Logout button missing from header</p>';
+                }
+                
+                if (!sidebarLogout) {
+                    html += '<p class="success">✅ No logout button in sidebar (CORRECT)</p>';
+                    updateTestSummary('logout', 'success');
+                } else {
+                    html += '<p class="error">❌ Logout button still found in sidebar (INCORRECT)</p>';
+                    updateTestSummary('logout', 'error');
+                }
+                
+                html += '<p class="info">The logout button should only appear in the top-right corner of each section header.</p>';
+                
+                resultsDiv.innerHTML = html;
+            }, 500);
+        }
+        
+        function updateTestSummary(test, status) {
+            const summaryDiv = document.getElementById('test-summary');
+            const existing = summaryDiv.querySelector(`[data-test="${test}"]`);
+            
+            const resultElement = document.createElement('p');
+            resultElement.dataset.test = test;
+            resultElement.className = status;
+            
+            if (test === 'slider') {
+                resultElement.textContent = status === 'success' ? 
+                    '✅ Slider images are working correctly' : 
+                    '❌ Slider images have issues';
+            } else if (test === 'logout') {
+                resultElement.textContent = status === 'success' ? 
+                    '✅ Logout button placement is correct' : 
+                    '❌ Logout button placement has issues';
+            }
+            
+            if (existing) {
+                existing.replaceWith(resultElement);
+            } else {
+                summaryDiv.appendChild(resultElement);
+            }
+        }
+        
+        // Auto-run tests when page loads
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                testSliderImages();
+                testLogoutButton();
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 
