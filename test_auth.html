@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        input { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🔐 Authentication Test</h1>
+    
+    <div class="test-section info">
+        <h3>API Base URL Test</h3>
+        <p>Testing connection to: <strong id="api-url">Loading...</strong></p>
+        <div id="api-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>User Registration Test</h3>
+        <input type="text" id="reg-username" placeholder="Username" value="testuser123">
+        <input type="email" id="reg-email" placeholder="Email" value="testuser123@example.com">
+        <input type="password" id="reg-password" placeholder="Password" value="testpass123">
+        <button onclick="testRegistration()">Test Registration</button>
+        <div id="reg-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>User Login Test</h3>
+        <input type="text" id="login-username" placeholder="Username" value="admin">
+        <input type="password" id="login-password" placeholder="Password" value="admin123">
+        <button onclick="testLogin()">Test Login</button>
+        <div id="login-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Current User Status</h3>
+        <div id="user-status">Not logged in</div>
+        <button onclick="checkCurrentUser()">Check Current User</button>
+        <button onclick="clearUser()">Clear User Data</button>
+    </div>
+    
+    <script>
+        const API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
+        
+        // Display API URL
+        document.getElementById('api-url').textContent = API_BASE;
+        
+        // Test API connectivity
+        fetch(`${API_BASE.replace('/api', '')}/`)
+            .then(res => {
+                const statusDiv = document.getElementById('api-status');
+                if (res.ok) {
+                    statusDiv.innerHTML = '<span style="color: green;">✅ API is accessible</span>';
+                } else {
+                    statusDiv.innerHTML = '<span style="color: red;">❌ API returned error: ' + res.status + '</span>';
+                }
+            })
+            .catch(err => {
+                document.getElementById('api-status').innerHTML = '<span style="color: red;">❌ API connection failed: ' + err.message + '</span>';
+            });
+        
+        function testRegistration() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            
+            const resultDiv = document.getElementById('reg-result');
+            resultDiv.innerHTML = '<span style="color: blue;">🔄 Registering...</span>';
+            
+            fetch(`${API_BASE}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.innerHTML = '<span style="color: green;">✅ Registration successful!</span>';
+                } else {
+                    resultDiv.innerHTML = '<span style="color: red;">❌ Registration failed: ' + (data.error || 'Unknown error') + '</span>';
+                }
+            })
+            .catch(err => {
+                resultDiv.innerHTML = '<span style="color: red;">❌ Registration error: ' + err.message + '</span>';
+            });
+        }
+        
+        function testLogin() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            const resultDiv = document.getElementById('login-result');
+            resultDiv.innerHTML = '<span style="color: blue;">🔄 Logging in...</span>';
+            
+            fetch(`${API_BASE}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.innerHTML = '<span style="color: green;">✅ Login successful! User: ' + data.user.username + '</span>';
+                    // Store user data
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    checkCurrentUser();
+                } else {
+                    resultDiv.innerHTML = '<span style="color: red;">❌ Login failed: ' + (data.error || 'Unknown error') + '</span>';
+                }
+            })
+            .catch(err => {
+                resultDiv.innerHTML = '<span style="color: red;">❌ Login error: ' + err.message + '</span>';
+            });
+        }
+        
+        function checkCurrentUser() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const statusDiv = document.getElementById('user-status');
+            
+            if (user) {
+                statusDiv.innerHTML = `
+                    <span style="color: green;">✅ Logged in as: ${user.username} (${user.email})</span>
+                    <br><small>User ID: ${user.id}</small>
+                `;
+            } else {
+                statusDiv.innerHTML = '<span style="color: red;">❌ Not logged in</span>';
+            }
+        }
+        
+        function clearUser() {
+            localStorage.removeItem('currentUser');
+            checkCurrentUser();
+        }
+        
+        // Check current user on page load
+        checkCurrentUser();
+    </script>
+</body>
+</html> 

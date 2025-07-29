@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Refresh Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .book { border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .book img { max-width: 100px; height: auto; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Frontend Refresh Test</h1>
+    <p>This page tests if the frontend can fetch the latest books from your backend.</p>
+    
+    <button onclick="fetchBooks()">Fetch Books Now</button>
+    <button onclick="clearCache()">Clear Cache & Fetch</button>
+    <button onclick="location.reload()">Reload Page</button>
+    
+    <div id="status"></div>
+    <div id="books"></div>
+    
+    <script>
+        const API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
+        
+        function showStatus(message, type = 'success') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+        }
+        
+        function clearCache() {
+            // Clear any cached data
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                });
+            }
+            showStatus('Cache cleared. Fetching fresh data...', 'success');
+            fetchBooks();
+        }
+        
+        function fetchBooks() {
+            showStatus('Fetching books from backend...', 'success');
+            
+            fetch(`${API_BASE}/resources`, {
+                method: 'GET',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                showStatus(`✅ Successfully fetched ${data.books?.length || 0} books, ${data.papers?.length || 0} papers, ${data.setbooks?.length || 0} setbooks`, 'success');
+                displayBooks(data);
+            })
+            .catch(error => {
+                showStatus(`❌ Error fetching books: ${error.message}`, 'error');
+                console.error('Error:', error);
+            });
+        }
+        
+        function displayBooks(data) {
+            const booksDiv = document.getElementById('books');
+            booksDiv.innerHTML = '<h2>Books from Backend:</h2>';
+            
+            if (data.books && data.books.length > 0) {
+                data.books.forEach(book => {
+                    const bookDiv = document.createElement('div');
+                    bookDiv.className = 'book';
+                    
+                    let coverUrl = 'assets/placeholder.jpg';
+                    if (book.cover && book.cover !== 'null') {
+                        if (book.cover.startsWith('static/covers/')) {
+                            const baseUrl = API_BASE.replace('/api', '');
+                            coverUrl = `${baseUrl}/${book.cover}`;
+                        } else if (book.cover.startsWith('http')) {
+                            coverUrl = book.cover;
+                        } else {
+                            coverUrl = `assets/${book.cover}`;
+                        }
+                    }
+                    
+                    bookDiv.innerHTML = `
+                        <h3>${book.title}</h3>
+                        <img src="${coverUrl}" alt="${book.title}" onerror="this.src='assets/placeholder.jpg'">
+                        <p><strong>Class:</strong> ${book.class_grade}</p>
+                        <p><strong>Subject:</strong> ${book.subject}</p>
+                        <p><strong>Type:</strong> ${book.resource_type}</p>
+                        <p><strong>Description:</strong> ${book.description}</p>
+                        <p><strong>ID:</strong> ${book.id}</p>
+                    `;
+                    booksDiv.appendChild(bookDiv);
+                });
+            } else {
+                booksDiv.innerHTML += '<p>No books found in the database.</p>';
+            }
+            
+            if (data.setbooks && data.setbooks.length > 0) {
+                booksDiv.innerHTML += '<h2>Setbooks from Backend:</h2>';
+                data.setbooks.forEach(book => {
+                    const bookDiv = document.createElement('div');
+                    bookDiv.className = 'book';
+                    
+                    let coverUrl = 'assets/placeholder.jpg';
+                    if (book.cover && book.cover !== 'null') {
+                        if (book.cover.startsWith('static/covers/')) {
+                            const baseUrl = API_BASE.replace('/api', '');
+                            coverUrl = `${baseUrl}/${book.cover}`;
+                        } else if (book.cover.startsWith('http')) {
+                            coverUrl = book.cover;
+                        } else {
+                            coverUrl = `assets/${book.cover}`;
+                        }
+                    }
+                    
+                    bookDiv.innerHTML = `
+                        <h3>${book.title}</h3>
+                        <img src="${coverUrl}" alt="${book.title}" onerror="this.src='assets/placeholder.jpg'">
+                        <p><strong>Class:</strong> ${book.class_grade}</p>
+                        <p><strong>Subject:</strong> ${book.subject}</p>
+                        <p><strong>Type:</strong> ${book.resource_type}</p>
+                        <p><strong>Description:</strong> ${book.description}</p>
+                        <p><strong>ID:</strong> ${book.id}</p>
+                    `;
+                    booksDiv.appendChild(bookDiv);
+                });
+            }
+        }
+        
+        // Auto-fetch on page load
+        window.onload = function() {
+            fetchBooks();
+        };
+    </script>
+</body>
+</html> 

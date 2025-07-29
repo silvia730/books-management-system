@@ -29,9 +29,10 @@ let API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
 let currentUser = null; // Add user authentication state
 
 function fetchApiBaseUrl() {
-    // For now, use the hardcoded URL to ensure it works
+    // API_BASE is already set at the top of the file
     console.log('API Base URL set to:', API_BASE);
-    return Promise.resolve();
+    // Return a resolved promise to ensure initialization continues
+    return Promise.resolve(API_BASE);
 }
 
 // Add this function near the top
@@ -59,15 +60,31 @@ function fetchAndRenderResources() {
         return;
     }
     
-    fetch(`${API_BASE}/resources`)
-        .then(res => res.json())
+    console.log('🔄 Fetching resources from:', `${API_BASE}/resources`);
+    
+    fetch(`${API_BASE}/resources`, {
+        method: 'GET',
+        headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+    })
+        .then(res => {
+            console.log('📡 Response status:', res.status);
+            return res.json();
+        })
         .then(data => {
+            console.log('📚 Received data:', data);
+            console.log('📖 Books count:', data.books?.length || 0);
+            console.log('📄 Papers count:', data.papers?.length || 0);
+            console.log('📚 Setbooks count:', data.setbooks?.length || 0);
+            
             renderGeneralResources('.books-section', data.books || getSampleBooks(), 'general');
             renderGeneralResources('#papers', data.papers || getSamplePapers(), 'paper');
             renderGeneralResources('#setbooks', data.setbooks || getSampleSetbooks(), 'setbook');
         })
         .catch((error) => {
-            console.error('Failed to fetch resources:', error);
+            console.error('❌ Failed to fetch resources:', error);
             renderGeneralResources('.books-section', getSampleBooks(), 'general');
             renderGeneralResources('#papers', getSamplePapers(), 'paper');
             renderGeneralResources('#setbooks', getSampleSetbooks(), 'setbook');
@@ -469,16 +486,219 @@ if (typeof document !== 'undefined') {
     });
 }
 
-// Initialize the slider when the page loads
-function mainAppInit() {
-    const signinModal = document.getElementById('signin-modal');
-    const registerModal = document.getElementById('register-modal');
+// Enhanced authentication functions
+function checkUserAuth() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (user) {
+        currentUser = user;
+        console.log('User authenticated:', user.username);
+    }
+    updateAuthUI();
+}
+
+function updateAuthUI() {
+    console.log('🔄 Updating authentication UI...');
+    console.log('Current user:', currentUser);
     
-    // Check for existing user session
+    const userActions = document.querySelector('.user-actions');
+    if (!userActions) {
+        console.error('❌ user-actions div not found');
+        return;
+    }
+    
+    console.log('✅ Found user-actions div');
+
+    if (currentUser) {
+        // User is logged in - show user info and logout
+        console.log('👤 User is logged in, showing welcome message');
+        userActions.innerHTML = `
+            <span class="user-welcome">Welcome, ${currentUser.username}!</span>
+            <a href="#" class="sign-out-link">Sign Out</a>
+        `;
+        
+        // Add logout functionality
+        const signOutLink = userActions.querySelector('.sign-out-link');
+        if (signOutLink) {
+            signOutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                signOut();
+            });
+        }
+    } else {
+        // User is not logged in - show sign in/register buttons
+        console.log('🔐 User is not logged in, showing sign in/register buttons');
+        userActions.innerHTML = `
+            <a href="#" class="sign-in-link">Sign In</a>
+            <a href="#" class="register-link">Register</a>
+        `;
+        
+        // Add event listeners for sign in and register
+        const signInLink = userActions.querySelector('.sign-in-link');
+        const registerLink = userActions.querySelector('.register-link');
+        
+        if (signInLink) {
+            signInLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal(document.getElementById('signin-modal'));
+            });
+        }
+        
+        if (registerLink) {
+            registerLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal(document.getElementById('register-modal'));
+            });
+        }
+    }
+    
+    console.log('✅ Authentication UI updated successfully');
+}
+
+function signOut() {
+    localStorage.removeItem('currentUser');
+    currentUser = null;
+    updateAuthUI();
+    console.log('User signed out');
+}
+
+// Enhanced modal functionality
+function setupModalEventListeners() {
+    // Sign In form submission
+    const signinForm = document.getElementById('signin-form');
+    if (signinForm) {
+        signinForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('signin-username').value;
+            const password = document.getElementById('signin-password').value;
+            
+            if (!username || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = signinForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Signing In...';
+            submitBtn.disabled = true;
+            
+            fetch(`${API_BASE}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    updateAuthUI();
+                    closeModal(document.getElementById('signin-modal'));
+                    signinForm.reset();
+                    alert('Successfully signed in!');
+                } else {
+                    alert(data.error || 'Sign in failed');
+                }
+            })
+            .catch(error => {
+                console.error('Sign in error:', error);
+                alert('Sign in failed. Please try again.');
+            })
+            .finally(() => {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+    }
+    
+    // Register form submission
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            if (!username || !email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = registerForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Registering...';
+            submitBtn.disabled = true;
+            
+            fetch(`${API_BASE}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Registration successful! Please sign in.');
+                    closeModal(document.getElementById('register-modal'));
+                    registerForm.reset();
+                    // Switch to sign in modal
+                    openModal(document.getElementById('signin-modal'));
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            })
+            .catch(error => {
+                console.error('Registration error:', error);
+                alert('Registration failed. Please try again.');
+            })
+            .finally(() => {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+    }
+    
+    // Modal switching functionality
+    const showRegisterLink = document.querySelector('.show-register-link');
+    const showSigninLink = document.querySelector('.show-signin-link');
+    
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeModal(document.getElementById('signin-modal'));
+            openModal(document.getElementById('register-modal'));
+        });
+    }
+    
+    if (showSigninLink) {
+        showSigninLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeModal(document.getElementById('register-modal'));
+            openModal(document.getElementById('signin-modal'));
+        });
+    }
+}
+
+// Enhanced main initialization
+function mainAppInit() {
+    console.log('🚀 Initializing main application...');
+    
+    // Check for existing user session FIRST
     checkUserAuth();
+    console.log('✅ Authentication check completed');
     
     // Initialize revision slider
     initRevisionSlider();
+    
+    // Setup modal event listeners
+    setupModalEventListeners();
     
     // Fetch and render resources
     fetchAndRenderResources();
@@ -567,286 +787,106 @@ function mainAppInit() {
                         { value: 'literature_english', label: 'Literature in English' }
                     ];
                 }
-                } else if (this.value.includes('grade')) {
-                    // CBC Grades 1-12 subjects
-                    subjects = [
-                        { value: 'english', label: 'English' },
-                        { value: 'kiswahili', label: 'Kiswahili' },
-                        { value: 'kenya_sign_language', label: 'Kenya Sign Language' },
-                        { value: 'mathematics', label: 'Mathematics' },
-                        { value: 'religious_education', label: 'Religious Education' },
-                        { value: 'environmental_activities', label: 'Environmental Activities' },
-                        { value: 'creative_activities', label: 'Creative Activities' },
-                        { value: 'science_technology', label: 'Science and Technology' },
-                        { value: 'agriculture_nutrition', label: 'Agriculture and Nutrition' },
-                        { value: 'social_studies', label: 'Social Studies' },
-                        { value: 'arts_craft', label: 'Arts and Craft' },
-                        { value: 'music', label: 'Music' },
-                        { value: 'physical_health_education', label: 'Physical and Health Education' },
-                        { value: 'integrated_science', label: 'Integrated Science' },
-                        { value: 'pre_technical_career', label: 'Pre-Technical and Pre-Career Education' },
-                        { value: 'business_studies', label: 'Business Studies' },
-                        { value: 'health_education', label: 'Health Education' },
-                        { value: 'life_skills_education', label: 'Life Skills Education' },
-                        { value: 'computer_science', label: 'Computer Science' },
-                        { value: 'home_science', label: 'Home Science' },
-                        { value: 'community_service_learning', label: 'Community Service Learning' },
-                        { value: 'physics', label: 'Physics' },
-                        { value: 'chemistry', label: 'Chemistry' },
-                        { value: 'biology', label: 'Biology' },
-                        { value: 'fine_art', label: 'Fine Art' },
-                        { value: 'performing_arts', label: 'Performing Arts' },
-                        { value: 'sports_science', label: 'Sports Science' },
-                        { value: 'history', label: 'History' },
-                        { value: 'geography', label: 'Geography' },
-                        { value: 'literature_english', label: 'Literature in English' }
-                    ];
-                }
                 
+                // Clear and populate subject select
                 subjectSelect.innerHTML = '<option value="">Select Subject</option>';
                 subjects.forEach(subject => {
-                    subjectSelect.innerHTML += `<option value="${subject.value}">${subject.label}</option>`;
+                    const option = document.createElement('option');
+                    option.value = subject.value;
+                    option.textContent = subject.label;
+                    subjectSelect.appendChild(option);
                 });
             } else {
                 subjectSelect.disabled = true;
-                subjectSelect.innerHTML = '<option value="">First select a class/grade</option>';
+                subjectSelect.innerHTML = '<option value="">Select Subject</option>';
             }
         });
     }
     
-    // Find resources button
-    const findResourcesBtn = document.getElementById('find-resources');
+    // Find Resources button functionality
+    const findResourcesBtn = document.getElementById('find-resources-btn');
     if (findResourcesBtn) {
         findResourcesBtn.addEventListener('click', function() {
             const selectedClass = classSelect ? classSelect.value : '';
             const selectedSubject = subjectSelect ? subjectSelect.value : '';
             
-            if (isNullOrEmpty(selectedClass)) {
-                alert('Please select a class/grade');
-                return;
+            if (selectedClass && selectedSubject) {
+                window.location.href = `resources.html?class=${encodeURIComponent(selectedClass)}&subject=${encodeURIComponent(selectedSubject)}`;
+            } else {
+                alert('Please select both class and subject');
             }
-            
-            if (isNullOrEmpty(selectedSubject)) {
-                alert('Please select a subject');
-                return;
-            }
-            
-            // Redirect to resources page with query params
-            window.location.href = `resources.html?class=${encodeURIComponent(selectedClass)}&subject=${encodeURIComponent(selectedSubject)}`;
         });
     }
+    
+    console.log('✅ Main application initialized successfully');
+}
 
-    // Enhanced user authentication
-    const signinForm = document.getElementById('signin-form');
-    if (signinForm) {
-        signinForm.onsubmit = function(e) {
+// Smooth scrolling for anchor links (About, Contact, etc.)
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href.startsWith('#') && href.length > 1) {
             e.preventDefault();
-            const form = e.target;
-            const username = form.querySelector('input[type="text"]').value;
-            const password = form.querySelector('input[type="password"]').value;
-            
-            // Show loading state
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Signing in...';
-            submitBtn.disabled = true;
-            
-            fetch(`${API_BASE}/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    currentUser = data.user;
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    updateAuthUI();
-                    closeModal(signinModal);
-                    alert('Sign in successful!');
-                } else {
-                    alert(data.error || 'Sign in failed');
-                }
-            })
-            .catch((error) => {
-                console.error('Login API error:', error);
-                alert('Failed to connect to backend API. Please make sure the backend server is running.');
-            })
-            .finally(() => {
-                // Reset button state
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            });
-        };
-    }
-    
-    const registerForm = document.getElementById('register-form');
-    if (registerForm) {
-        registerForm.onsubmit = function(e) {
-            e.preventDefault();
-            const form = e.target;
-            const username = form.querySelector('input[type="text"]').value;
-            const email = form.querySelector('input[type="email"]').value;
-            const password = form.querySelector('input[type="password"]').value;
-            
-            // Show loading state
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Registering...';
-            submitBtn.disabled = true;
-            
-            fetch(`${API_BASE}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Registration successful! You can now sign in.');
-                    closeModal(registerModal);
-                    // Switch to sign in modal
-                    openModal(signinModal);
-                } else {
-                    alert(data.error || 'Registration failed');
-                }
-            })
-            .catch((error) => {
-                console.error('Register API error:', error);
-                alert('Failed to connect to backend API. Please make sure the backend server is running.');
-            })
-            .finally(() => {
-                // Reset button state
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            });
-        };
-    }
-    
-    // Smooth scrolling for anchor links (About, Contact, etc.)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href && href.startsWith('#') && href.length > 1) {
-            e.preventDefault();
-                const target = document.querySelector(href);
+            const target = document.querySelector(href);
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth' });
-                }
             }
-        });
-    });
-    // Ensure Sign In and Register links open their modals (fix)
-    document.querySelectorAll('.user-actions a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
-                console.log('Sign In clicked');
-                openModal(signinModal);
-            } else if (this.textContent.includes('Register')) {
-                console.log('Register clicked');
-                openModal(registerModal);
-            }
-        });
-    });
-    
-    // Add modal switching functionality
-    const showRegisterLink = document.getElementById('show-register');
-    const showSigninLink = document.getElementById('show-signin');
-    
-    if (showRegisterLink) {
-        showRegisterLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            closeModal(signinModal);
-            openModal(registerModal);
-        });
-    }
-    
-    if (showSigninLink) {
-        showSigninLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            closeModal(registerModal);
-            openModal(signinModal);
-        });
-    }
-    // Contact form logic
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.onsubmit = function(e) {
-            e.preventDefault();
-            document.getElementById('contact-message-status').textContent = 'Thank you for contacting us! We will get back to you soon.';
-            contactForm.reset();
-        };
-    }
-    
-    // Newsletter subscription logic
-    const newsletterBtn = document.querySelector('.newsletter-btn');
-    const newsletterInput = document.querySelector('.newsletter-input');
-    
-    if (newsletterBtn && newsletterInput) {
-        newsletterBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const email = newsletterInput.value.trim();
-            
-            if (!email) {
-                alert('Please enter your email address.');
-                return;
-            }
-            
-            if (!email.includes('@')) {
-                alert('Please enter a valid email address.');
-                return;
-            }
-            
-            // Show success message
-            newsletterBtn.textContent = 'Subscribed!';
-            newsletterBtn.style.backgroundColor = '#2e8b57';
-            newsletterInput.value = '';
-            
-            setTimeout(() => {
-                newsletterBtn.textContent = 'Subscribe';
-                newsletterBtn.style.backgroundColor = '';
-            }, 2000);
-        });
-    }
-}
-
-// Authentication helper functions
-function checkUserAuth() {
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-        try {
-            currentUser = JSON.parse(savedUser);
-            updateAuthUI();
-        } catch (error) {
-            console.error('Error parsing saved user:', error);
-            localStorage.removeItem('currentUser');
         }
-    }
-}
-
-function updateAuthUI() {
-    const userActions = document.querySelector('.user-actions');
-    if (userActions) {
-        if (currentUser) {
-            userActions.innerHTML = `
-                <span style="color: #667eea; margin-right: 1rem;">Welcome, ${currentUser.username}</span>
-                <a href="#" class="btn btn-outline" onclick="signOut()">Sign Out</a>
-            `;
-        } else {
-            userActions.innerHTML = `
-                <a href="#"><i class="fas fa-user"></i> Sign In</a>
-                <a href="#" class="btn btn-outline">Register</a>
-            `;
+    });
+});
+// Ensure Sign In and Register links open their modals (fix)
+document.querySelectorAll('.user-actions a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
+            console.log('Sign In clicked');
+            openModal(document.getElementById('signin-modal'));
+        } else if (this.textContent.includes('Register')) {
+            console.log('Register clicked');
+            openModal(document.getElementById('register-modal'));
         }
-    }
+    });
+});
+
+// Contact form logic
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+    contactForm.onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('contact-message-status').textContent = 'Thank you for contacting us! We will get back to you soon.';
+        contactForm.reset();
+    };
 }
 
-function signOut() {
-    currentUser = null;
-    localStorage.removeItem('currentUser');
-    updateAuthUI();
-    alert('Signed out successfully!');
+// Newsletter subscription logic
+const newsletterBtn = document.querySelector('.newsletter-btn');
+const newsletterInput = document.querySelector('.newsletter-input');
+
+if (newsletterBtn && newsletterInput) {
+    newsletterBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const email = newsletterInput.value.trim();
+        
+        if (!email) {
+            alert('Please enter your email address.');
+            return;
+        }
+        
+        if (!email.includes('@')) {
+            alert('Please enter a valid email address.');
+            return;
+        }
+        
+        // Show success message
+        newsletterBtn.textContent = 'Subscribed!';
+        newsletterBtn.style.backgroundColor = '#2e8b57';
+        newsletterInput.value = '';
+        
+        setTimeout(() => {
+            newsletterBtn.textContent = 'Subscribe';
+            newsletterBtn.style.backgroundColor = '';
+        }, 2000);
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function() {

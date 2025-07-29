@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication UI Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .header { background: #333; color: white; padding: 20px; margin-bottom: 20px; }
+        .user-actions { display: flex; gap: 10px; align-items: center; }
+        .user-actions a { color: white; text-decoration: none; padding: 8px 16px; border-radius: 4px; }
+        .user-actions a:hover { background: rgba(255,255,255,0.1); }
+        .btn-outline { border: 1px solid white; }
+        .user-welcome { color: #4CAF50; font-weight: bold; }
+        .sign-out-link { background: #f44336; }
+        .sign-out-link:hover { background: #d32f2f; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        input { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 3px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 10% auto; padding: 20px; width: 80%; max-width: 400px; border-radius: 8px; }
+        .close { float: right; cursor: pointer; font-size: 24px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>SomaFy Test</h1>
+            <div class="user-actions" id="user-actions">
+                <a href="#" class="sign-in-link">Sign In</a>
+                <a href="#" class="btn btn-outline register-link">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Authentication Status</h3>
+        <div id="auth-status">Checking...</div>
+        <button onclick="checkAuth()">Check Authentication</button>
+        <button onclick="simulateLogin()">Simulate Login</button>
+        <button onclick="simulateLogout()">Simulate Logout</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Manual Login Test</h3>
+        <input type="text" id="test-username" placeholder="Username" value="admin">
+        <input type="password" id="test-password" placeholder="Password" value="admin123">
+        <button onclick="testLogin()">Test Login</button>
+        <div id="login-result"></div>
+    </div>
+
+    <!-- Sign In Modal -->
+    <div id="signin-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signin-modal')">&times;</span>
+            <h2>Sign In</h2>
+            <form id="signin-form">
+                <div>
+                    <label for="signin-username">Username</label>
+                    <input type="text" id="signin-username" required>
+                </div>
+                <div>
+                    <label for="signin-password">Password</label>
+                    <input type="password" id="signin-password" required>
+                </div>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('register-modal')">&times;</span>
+            <h2>Register</h2>
+            <form id="register-form">
+                <div>
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" required>
+                </div>
+                <div>
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div>
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://books-management-system-bcr5.onrender.com/api';
+        let currentUser = null;
+
+        // Authentication functions
+        function checkUserAuth() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                currentUser = user;
+                console.log('User authenticated:', user.username);
+            }
+            updateAuthUI();
+        }
+
+        function updateAuthUI() {
+            const userActions = document.getElementById('user-actions');
+            if (!userActions) {
+                console.error('user-actions div not found');
+                return;
+            }
+
+            if (currentUser) {
+                // User is logged in - show user info and logout
+                userActions.innerHTML = `
+                    <span class="user-welcome">Welcome, ${currentUser.username}!</span>
+                    <a href="#" class="sign-out-link" onclick="signOut()">Sign Out</a>
+                `;
+            } else {
+                // User is not logged in - show sign in/register buttons
+                userActions.innerHTML = `
+                    <a href="#" class="sign-in-link" onclick="openModal('signin-modal')">Sign In</a>
+                    <a href="#" class="btn btn-outline register-link" onclick="openModal('register-modal')">Register</a>
+                `;
+            }
+        }
+
+        function signOut() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            updateAuthUI();
+            console.log('User signed out');
+            checkAuth();
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Test functions
+        function checkAuth() {
+            const statusDiv = document.getElementById('auth-status');
+            if (currentUser) {
+                statusDiv.innerHTML = `<span style="color: green;">✅ Logged in as: ${currentUser.username} (${currentUser.email})</span>`;
+            } else {
+                statusDiv.innerHTML = '<span style="color: red;">❌ Not logged in</span>';
+            }
+        }
+
+        function simulateLogin() {
+            currentUser = { username: 'testuser', email: 'test@example.com', id: 1 };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateAuthUI();
+            checkAuth();
+        }
+
+        function simulateLogout() {
+            signOut();
+        }
+
+        function testLogin() {
+            const username = document.getElementById('test-username').value;
+            const password = document.getElementById('test-password').value;
+            const resultDiv = document.getElementById('login-result');
+            
+            resultDiv.innerHTML = '<span style="color: blue;">🔄 Logging in...</span>';
+            
+            fetch(`${API_BASE}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.innerHTML = '<span style="color: green;">✅ Login successful!</span>';
+                    currentUser = data.user;
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    updateAuthUI();
+                    checkAuth();
+                } else {
+                    resultDiv.innerHTML = '<span style="color: red;">❌ Login failed: ' + (data.error || 'Unknown error') + '</span>';
+                }
+            })
+            .catch(err => {
+                resultDiv.innerHTML = '<span style="color: red;">❌ Login error: ' + err.message + '</span>';
+            });
+        }
+
+        // Form submissions
+        document.getElementById('signin-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('signin-username').value;
+            const password = document.getElementById('signin-password').value;
+            
+            fetch(`${API_BASE}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    updateAuthUI();
+                    closeModal('signin-modal');
+                    checkAuth();
+                    alert('Successfully signed in!');
+                } else {
+                    alert(data.error || 'Sign in failed');
+                }
+            })
+            .catch(error => {
+                console.error('Sign in error:', error);
+                alert('Sign in failed. Please try again.');
+            });
+        });
+
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            fetch(`${API_BASE}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Registration successful! Please sign in.');
+                    closeModal('register-modal');
+                    openModal('signin-modal');
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            })
+            .catch(error => {
+                console.error('Registration error:', error);
+                alert('Registration failed. Please try again.');
+            });
+        });
+
+        // Initialize on page load
+        window.onload = function() {
+            checkUserAuth();
+            checkAuth();
+        };
+    </script>
+</body>
+</html> 

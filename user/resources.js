@@ -333,17 +333,49 @@ function checkUserAuth() {
 
 function updateAuthUI() {
     const userActions = document.querySelector('.user-actions');
-    if (userActions) {
-        if (currentUser) {
-            userActions.innerHTML = `
-                <span style="color: #667eea; margin-right: 1rem;">Welcome, ${currentUser.username}</span>
-                <a href="#" class="btn btn-outline" onclick="signOut()">Sign Out</a>
-            `;
-        } else {
-            userActions.innerHTML = `
-                <a href="#" class="sign-in-link"><i class="fas fa-user"></i> Sign In</a>
-                <a href="#" class="btn btn-outline">Register</a>
-            `;
+    if (!userActions) {
+        console.error('user-actions div not found');
+        return;
+    }
+
+    if (currentUser) {
+        // User is logged in - show user info and logout
+        userActions.innerHTML = `
+            <span class="user-welcome">Welcome, ${currentUser.username}!</span>
+            <a href="#" class="sign-out-link">Sign Out</a>
+        `;
+        
+        // Add logout functionality
+        const signOutLink = userActions.querySelector('.sign-out-link');
+        if (signOutLink) {
+            signOutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                signOut();
+            });
+        }
+    } else {
+        // User is not logged in - show sign in/register buttons
+        userActions.innerHTML = `
+            <a href="#" class="sign-in-link">Sign In</a>
+            <a href="#" class="register-link">Register</a>
+        `;
+        
+        // Add event listeners for sign in and register
+        const signInLink = userActions.querySelector('.sign-in-link');
+        const registerLink = userActions.querySelector('.register-link');
+        
+        if (signInLink) {
+            signInLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal(document.getElementById('signin-modal'));
+            });
+        }
+        
+        if (registerLink) {
+            registerLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal(document.getElementById('register-modal'));
+            });
         }
     }
 }
