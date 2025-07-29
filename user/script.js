@@ -581,6 +581,8 @@ function setupModalEventListeners() {
             submitBtn.textContent = 'Signing In...';
             submitBtn.disabled = true;
             
+            console.log('🔐 Attempting login with:', { username, password: '***' });
+            
             fetch(`${API_BASE}/login`, {
                 method: 'POST',
                 headers: {
@@ -588,8 +590,13 @@ function setupModalEventListeners() {
                 },
                 body: JSON.stringify({ username, password })
             })
-            .then(res => res.json())
+            .then(res => {
+                console.log('📡 Login response status:', res.status);
+                return res.json();
+            })
             .then(data => {
+                console.log('📡 Login response data:', data);
+                
                 if (data.success) {
                     currentUser = data.user;
                     localStorage.setItem('currentUser', JSON.stringify(data.user));
@@ -598,11 +605,12 @@ function setupModalEventListeners() {
                     signinForm.reset();
                     alert('Successfully signed in!');
                 } else {
+                    console.error('❌ Login failed:', data.error);
                     alert(data.error || 'Sign in failed');
                 }
             })
             .catch(error => {
-                console.error('Sign in error:', error);
+                console.error('❌ Sign in error:', error);
                 alert('Sign in failed. Please try again.');
             })
             .finally(() => {
@@ -633,6 +641,8 @@ function setupModalEventListeners() {
             submitBtn.textContent = 'Registering...';
             submitBtn.disabled = true;
             
+            console.log('📝 Attempting registration with:', { username, email, password: '***' });
+            
             fetch(`${API_BASE}/register`, {
                 method: 'POST',
                 headers: {
@@ -640,8 +650,13 @@ function setupModalEventListeners() {
                 },
                 body: JSON.stringify({ username, email, password })
             })
-            .then(res => res.json())
+            .then(res => {
+                console.log('📡 Registration response status:', res.status);
+                return res.json();
+            })
             .then(data => {
+                console.log('📡 Registration response data:', data);
+                
                 if (data.success) {
                     alert('Registration successful! Please sign in.');
                     closeModal(document.getElementById('register-modal'));
@@ -649,11 +664,12 @@ function setupModalEventListeners() {
                     // Switch to sign in modal
                     openModal(document.getElementById('signin-modal'));
                 } else {
+                    console.error('❌ Registration failed:', data.error);
                     alert(data.error || 'Registration failed');
                 }
             })
             .catch(error => {
-                console.error('Registration error:', error);
+                console.error('❌ Registration error:', error);
                 alert('Registration failed. Please try again.');
             })
             .finally(() => {
@@ -832,22 +848,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
-// Ensure Sign In and Register links open their modals (fix)
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.user-actions a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
-                console.log('Sign In clicked');
-                openModal(document.getElementById('signin-modal'));
-            } else if (this.textContent.includes('Register')) {
-                console.log('Register clicked');
-                openModal(document.getElementById('register-modal'));
-            }
-        });
-    });
-});
-
 // Contact form logic
 const contactForm = document.getElementById('contact-form');
 if (contactForm) {
@@ -889,6 +889,65 @@ if (newsletterBtn && newsletterInput) {
     });
 }
 
+// Main initialization - consolidate all DOMContentLoaded listeners
 document.addEventListener('DOMContentLoaded', function() {
-    fetchApiBaseUrl().then(mainAppInit);
+    console.log('🚀 Initializing user dashboard...');
+    
+    // First, set up API base URL
+    fetchApiBaseUrl().then(() => {
+        // Then initialize the main app
+        mainAppInit();
+        
+        // Set up modal links for Sign In and Register
+        document.querySelectorAll('.user-actions a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (this.textContent.includes('Sign In') || this.classList.contains('sign-in-link')) {
+                    console.log('Sign In clicked');
+                    openModal(document.getElementById('signin-modal'));
+                } else if (this.textContent.includes('Register')) {
+                    console.log('Register clicked');
+                    openModal(document.getElementById('register-modal'));
+                }
+            });
+        });
+        
+        // Set up modal switching links
+        const showRegisterLink = document.getElementById('show-register');
+        const showSigninLink = document.getElementById('show-signin');
+        
+        if (showRegisterLink) {
+            showRegisterLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeModal(document.getElementById('signin-modal'));
+                openModal(document.getElementById('register-modal'));
+            });
+        }
+        
+        if (showSigninLink) {
+            showSigninLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeModal(document.getElementById('register-modal'));
+                openModal(document.getElementById('signin-modal'));
+            });
+        }
+        
+        // Set up modal close buttons
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const modalId = this.getAttribute('data-modal');
+                const modal = document.getElementById(modalId);
+                if (modal) closeModal(modal);
+            });
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target);
+            }
+        });
+        
+        console.log('✅ All event listeners set up successfully');
+    });
 });
