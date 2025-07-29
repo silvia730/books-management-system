@@ -8,6 +8,9 @@ import logging
 import uuid
 from datetime import datetime
 from flask_migrate import Migrate
+import time
+import random
+import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -38,28 +41,32 @@ def get_pesapal_token():
             'consumer_secret': app.config['PESAPAL_CONSUMER_SECRET']
         }
         
-        headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
+        logger.info(f"Auth URL: {auth_url}")
+        logger.info(f"Consumer key exists: {bool(app.config['PESAPAL_CONSUMER_KEY'])}")
+        logger.info(f"Consumer secret exists: {bool(app.config['PESAPAL_CONSUMER_SECRET'])}")
         
-        auth_resp = requests.post(auth_url, json=auth_data, headers=headers, timeout=30)
+        auth_resp = requests.post(auth_url, json=auth_data, timeout=30)
+        
         logger.info(f"PesaPal auth response status: {auth_resp.status_code}")
+        logger.info(f"PesaPal auth response: {auth_resp.text}")
         
         if not auth_resp.ok:
             logger.error(f"Failed to authenticate with PesaPal: {auth_resp.text}")
             raise Exception(f"Failed to authenticate with PesaPal: {auth_resp.text}")
         
-        auth_json = auth_resp.json()
-        token = auth_json.get('token')
-        if not token:
+        auth_response = auth_resp.json()
+        access_token = auth_response.get('token')
+        
+        if not access_token:
+            logger.error("No access token received from PesaPal")
             raise Exception("No access token received from PesaPal")
         
         logger.info("PesaPal token received successfully")
-        return token
+        return access_token
+        
     except Exception as e:
         logger.error(f"Error getting PesaPal token: {str(e)}")
-        raise
+        raise e
 
 def generate_unique_order_id():
     """Generate a unique order tracking ID"""
@@ -195,145 +202,98 @@ def get_user_count():
 def pay():
     """PesaPal v3 API payment endpoint"""
     try:
-        logger.info("Payment request received")
-        data = request.json
-        logger.info(f"Payment data: {data}")
-        
-        # Validate required fields
-        required_fields = ['resource_id', 'email', 'name', 'phone']
-        missing_fields = [field for field in required_fields if not data.get(field)]
-        if missing_fields:
-            logger.error(f"Missing required fields: {missing_fields}")
-            return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
-        
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        # Extract payment data
         resource_id = data.get('resource_id')
-        user_email = data.get('email')
-        amount = data.get('amount', 100)  # Default to 100 KES
-        name = data.get('name', '')
-        phone = data.get('phone', '')
-        
-        logger.info(f"Processing payment for resource {resource_id}, email {user_email}, amount {amount}")
-        
-        # Validate resource exists
+        email = data.get('email')
+        amount = data.get('amount')
+        name = data.get('name')
+        phone = data.get('phone')
+        if not all([resource_id, email, amount, name, phone]):
+            return jsonify({'error': 'Missing required fields'}), 400
         resource = Resource.query.get(resource_id)
         if not resource:
-            logger.error(f"Resource {resource_id} not found")
             return jsonify({'error': 'Resource not found'}), 404
-        
-        logger.info(f"Resource found: {resource.title}")
-        
-        # Get PesaPal credentials
+        order_tracking_id = f"ORDER_{int(time.time())}_{random.randint(1000, 9999)}"
         pesapal_key = app.config['PESAPAL_CONSUMER_KEY']
         pesapal_secret = app.config['PESAPAL_CONSUMER_SECRET']
         pesapal_base_url = app.config['PESAPAL_BASE_URL']
-        
-        logger.info(f"PesaPal key exists: {bool(pesapal_key)}")
-        logger.info(f"PesaPal secret exists: {bool(pesapal_secret)}")
-        logger.info(f"PesaPal base URL: {pesapal_base_url}")
-        
-        # Check if PesaPal credentials are available
         if not pesapal_key or not pesapal_secret:
-            logger.warning('PesaPal credentials missing - using test payment mode')
-            # Create a test payment instead
-            test_order_id = f"test_{generate_unique_order_id()}"
-            payment = create_payment_record(test_order_id, resource_id, user_email, amount, 'COMPLETED')
-            
-            logger.info(f"Test payment created: {test_order_id}")
-            
+            payment = create_payment_record(
+                order_tracking_id=order_tracking_id,
+                resource_id=resource_id,
+                user_email=email,
+                amount=amount,
+                status='COMPLETED'
+            )
+            db.session.add(payment)
+            db.session.commit()
             return jsonify({
                 'success': True,
-                'message': 'Test payment successful (PesaPal not configured)',
-                'orderTrackingId': test_order_id,
-                'payment_id': payment.id,
-                'payment_url': None
+                'orderTrackingId': order_tracking_id,
+                'redirectUrl': f"https://books-management-system-bcr5.onrender.com/user/download-success.html?resource_id={resource_id}&email={email}&orderTrackingId={order_tracking_id}",
+                'message': 'Test payment successful (PesaPal not configured)'
             })
-        
-        # Get access token
         try:
             access_token = get_pesapal_token()
-            logger.info("PesaPal access token obtained successfully")
         except Exception as e:
-            logger.error(f"Failed to get PesaPal token: {str(e)}")
-            return jsonify({'error': f'Payment service unavailable: {str(e)}'}), 503
-        
-        # Create order using PesaPal v3 API
+            return jsonify({'error': f'Payment service temporarily unavailable: {str(e)}'}), 503
         order_url = f"{pesapal_base_url}/Transactions/SubmitOrderRequest"
+        pesapal_order = {
+            'id': order_tracking_id,
+            'currency': 'KES',
+            'amount': float(amount),
+            'description': f"Purchase: {resource.title}",
+            'callback_url': 'https://books-management-system-bcr5.onrender.com/api/pesapal-callback',
+            'notification_id': app.config.get('PESAPAL_NOTIFICATION_ID', '4ad16ada-f09b-4b45-8c18-db86b60a879d'),
+            'billing_address': {
+                'email_address': email,
+                'phone_number': phone,
+                'country_code': 'KE',
+                'first_name': name.split()[0] if name else 'User',
+                'last_name': name.split()[-1] if name and len(name.split()) > 1 else 'User'
+            }
+        }
         headers = {
             'Authorization': f'Bearer {access_token}',
             'Content-Type': 'application/json'
         }
-        
-        # Compose return_url for auto-download
-        return_url = (
-            'http://localhost:5500/user/auto-download.html'
-            f'?resource_id={resource_id}'
-            f'&email={user_email}'
-            f'&name={name}'
-            f'&phone={phone}'
-        )
-        
-        # PesaPal v3 API order data structure
-        order_data = {
-            'id': str(resource_id),
-            'currency': 'KES',
-            'amount': amount,
-            'description': f'Download: {resource.title}',
-            'callback_url': 'http://localhost:5000/api/pesapal-callback',
-            'notification_id': '',
-            'billing_address': {
-                'email_address': user_email,
-                'phone_number': phone,
-                'first_name': name,
-                'last_name': '',
-                'line_1': '',
-                'city': '',
-                'state': '',
-                'postal_code': '',
-                'country_code': 'KE'
-            },
-            'return_url': return_url
-        }
-        
-        logger.info(f"Submitting order to PesaPal: {order_url}")
-        logger.info(f"Order data: {order_data}")
-        
-        order_resp = requests.post(order_url, json=order_data, headers=headers, timeout=30)
-        logger.info(f"PesaPal response status: {order_resp.status_code}")
-        logger.info(f"PesaPal response: {order_resp.text}")
-        
-        if not order_resp.ok:
-            logger.error(f'Failed to create PesaPal order: {order_resp.text}')
-            return jsonify({'error': f'Failed to create payment order: {order_resp.text}'}), 500
-        
+        order_resp = requests.post(order_url, json=pesapal_order, headers=headers)
+        if order_resp.status_code != 200:
+            # Try to extract error from PesaPal response
+            try:
+                error_json = order_resp.json()
+                error_message = error_json.get('error', order_resp.text)
+            except Exception:
+                error_message = order_resp.text
+            return jsonify({'error': f'Payment service error: {error_message}'}), 500
         try:
             order_response = order_resp.json()
-        except Exception as e:
-            logger.error(f"Failed to parse PesaPal response as JSON: {order_resp.text}")
-            return jsonify({'error': 'Invalid response from payment service'}), 500
-        
-        payment_url = order_response.get('redirect_url')
-        order_tracking_id = order_response.get('order_tracking_id')
-        
-        if not payment_url or not order_tracking_id:
-            logger.error(f"Missing payment_url or order_tracking_id in response: {order_response}")
-            return jsonify({'error': 'Invalid response from payment service'}), 500
-        
-        # Store payment record
-        payment = create_payment_record(order_tracking_id, resource_id, user_email, amount, 'PENDING')
-        
-        logger.info(f"Payment initiated: Order ID {order_tracking_id}, Resource {resource_id}, Email {user_email}")
-        
+        except json.JSONDecodeError:
+            return jsonify({'error': f'Invalid response from payment service: {order_resp.text}'}), 500
+        if 'order_tracking_id' not in order_response:
+            return jsonify({'error': f'Invalid response from payment service: {order_response}'}), 500
+        payment = create_payment_record(
+            order_tracking_id=order_tracking_id,
+            resource_id=resource_id,
+            user_email=email,
+            amount=amount
+        )
+        db.session.add(payment)
+        db.session.commit()
+        redirect_url = order_response.get('redirect_url')
+        if not redirect_url:
+            redirect_url = f"https://books-management-system-bcr5.onrender.com/user/download-success.html?resource_id={resource_id}&email={email}&orderTrackingId={order_tracking_id}"
         return jsonify({
             'success': True,
-            'payment_url': payment_url, 
             'orderTrackingId': order_tracking_id,
-            'payment_id': payment.id
+            'redirectUrl': redirect_url,
+            'message': 'Payment initiated successfully'
         })
-        
     except Exception as e:
-        print('Unexpected error in /api/pay:', str(e))  # Print error to terminal
-        logger.exception('Unexpected error in /api/pay: %s', str(e))
-        return jsonify({'error': 'Internal server error'}), 500
+        return jsonify({'error': f'Internal server error: {str(e)}'}), 500
 
 @app.route('/api/pesapal-callback', methods=['POST'])
 def pesapal_callback():
