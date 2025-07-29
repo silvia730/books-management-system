@@ -140,7 +140,7 @@ def index():
 def admin_dashboard():
     """Serve the admin dashboard"""
     try:
-        admin_path = os.path.join(os.path.dirname(__file__), '..', 'admin', 'admin.html')
+        admin_path = os.path.join(os.path.dirname(__file__), '..', 'admin', 'index.html')
         if os.path.exists(admin_path):
             return send_file(admin_path)
         else:
@@ -296,12 +296,30 @@ def register():
     data = request.json
     if not data or not data.get('username') or not data.get('email') or not data.get('password'):
         return jsonify({'success': False, 'error': 'Missing fields'}), 400
-    if User.query.filter((User.username == data['username']) | (User.email == data['email'])).first():
+    
+    username = data['username']
+    email = data['email']
+    password = data['password']
+    
+    logger.info(f"Registration attempt for username: {username}, email: {email}")
+    
+    # Check if user already exists
+    existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
+    if existing_user:
+        logger.warning(f"User already exists: {username} or {email}")
         return jsonify({'success': False, 'error': 'Username or email already exists'}), 400
-    user = User(username=data['username'], email=data['email'])
-    user.set_password(data['password'])
+    
+    # Create new user
+    user = User(username=username, email=email)
+    user.set_password(password)
+    
+    logger.info(f"Password hash generated: {bool(user.password_hash)}")
+    logger.info(f"Password hash length: {len(user.password_hash) if user.password_hash else 0}")
+    
     db.session.add(user)
     db.session.commit()
+    
+    logger.info(f"User registered successfully: {username} (ID: {user.id})")
     return jsonify({'success': True})
 
 @app.route('/api/login', methods=['POST'])
@@ -309,10 +327,31 @@ def login():
     data = request.json
     if not data or not data.get('username') or not data.get('password'):
         return jsonify({'success': False, 'error': 'Missing fields'}), 400
-    user = User.query.filter_by(username=data['username']).first()
-    if user and user.check_password(data['password']):
+    
+    username = data['username']
+    password = data['password']
+    
+    logger.info(f"Login attempt for username: {username}")
+    
+    user = User.query.filter_by(username=username).first()
+    
+    if not user:
+        logger.warning(f"User not found: {username}")
+        return jsonify({'success': False, 'error': 'Invalid credentials'}), 401
+    
+    logger.info(f"User found: {username} (ID: {user.id})")
+    logger.info(f"Password hash exists: {bool(user.password_hash)}")
+    
+    # Check password
+    password_valid = user.check_password(password)
+    logger.info(f"Password check result: {password_valid}")
+    
+    if password_valid:
+        logger.info(f"Login successful for user: {username}")
         return jsonify({'success': True, 'user': {'id': user.id, 'username': user.username, 'email': user.email}})
-    return jsonify({'success': False, 'error': 'Invalid credentials'}), 401
+    else:
+        logger.warning(f"Invalid password for user: {username}")
+        return jsonify({'success': False, 'error': 'Invalid credentials'}), 401
 
 @app.route('/api/change_password', methods=['POST'])
 def change_password():
