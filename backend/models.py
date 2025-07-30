@@ -71,4 +71,4 @@ class Payment(db.Model):
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'ipn_received': self.ipn_received,
             'ipn_received_at': self.ipn_received_at.isoformat() if self.ipn_received_at else None
-        } 
+        }
