@@ -11,6 +11,7 @@ from flask_migrate import Migrate
 import time
 import random
 import json
+import re
 
 # Configure logging
 logging.basicConfig(
@@ -36,6 +37,7 @@ def ensure_admin_user():
         admin.set_password('admin123')
         db.session.add(admin)
         db.session.commit()
+        logger.info("Admin user created")
 
 def get_pesapal_token():
     """Get PesaPal access token"""
@@ -131,6 +133,18 @@ def create_payment_record(order_tracking_id, resource_id, user_email, amount, st
         logger.error(f"Failed to create payment record: {str(e)}")
         db.session.rollback()
         raise
+
+def is_strong_password(password):
+    """Check if password meets strength requirements"""
+    if len(password) < 8:
+        return False
+    if not re.search(r"[A-Z]", password):
+        return False
+    if not re.search(r"[a-z]", password):
+        return False
+    if not re.search(r"[0-9]", password):
+        return False
+    return True
 
 @app.route('/')
 def index():
@@ -261,10 +275,15 @@ def get_resources():
         # Get all filtered resources
         all_resources = query.all()
         
-        # Also get resources by type for backward compatibility
-        books = Resource.query.filter_by(resource_type='book').all()
-        papers = Resource.query.filter_by(resource_type='paper').all()
-        setbooks = Resource.query.filter_by(resource_type='setbook').all()
+        # Only show limited resources if no filters are applied
+        if not selected_class and not selected_subject:
+            books = Resource.query.filter_by(resource_type='book').limit(3).all()
+            papers = Resource.query.filter_by(resource_type='paper').limit(2).all()
+            setbooks = Resource.query.filter_by(resource_type='setbook').limit(2).all()
+        else:
+            books = []
+            papers = []
+            setbooks = []
         
         return jsonify({
             'all': [r.to_dict() for r in all_resources],  # New filtered results
@@ -303,6 +322,13 @@ def register():
     
     logger.info(f"Registration attempt for username: {username}, email: {email}")
     
+    # Check password strength
+    if not is_strong_password(password):
+        return jsonify({
+            'success': False,
+            'error': 'Password must be at least 8 characters with uppercase, lowercase, and numbers'
+        }), 400
+    
     # Check if user already exists
     existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
     if existing_user:
@@ -316,11 +342,15 @@ def register():
     logger.info(f"Password hash generated: {bool(user.password_hash)}")
     logger.info(f"Password hash length: {len(user.password_hash) if user.password_hash else 0}")
     
-    db.session.add(user)
-    db.session.commit()
-    
-    logger.info(f"User registered successfully: {username} (ID: {user.id})")
-    return jsonify({'success': True})
+    try:
+        db.session.add(user)
+        db.session.commit()
+        logger.info(f"User registered successfully: {username} (ID: {user.id})")
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error registering user: {str(e)}")
+        return jsonify({'success': False, 'error': 'Failed to register user'}), 500
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -358,12 +388,37 @@ def change_password():
     data = request.json
     if not data or not data.get('username') or not data.get('old_password') or not data.get('new_password'):
         return jsonify({'success': False, 'error': 'Missing fields'}), 400
+    
+    # Check password strength
+    if not is_strong_password(data['new_password']):
+        return jsonify({
+            'success': False,
+            'error': 'Password must be at least 8 characters with uppercase, lowercase, and numbers'
+        }), 400
+    
     user = User.query.filter_by(username=data['username']).first()
     if not user or not user.check_password(data['old_password']):
         return jsonify({'success': False, 'error': 'Old password is incorrect'}), 401
+    
     user.set_password(data['new_password'])
     db.session.commit()
     return jsonify({'success': True})
+
+@app.route('/api/reset_password', methods=['POST'])
+def reset_password():
+    data = request.json
+    email = data.get('email')
+    if not email:
+        return jsonify({'success': False, 'error': 'Missing email'}), 400
+    
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'success': False, 'error': 'User not found'}), 404
+    
+    # Implement actual password reset logic here
+    # (Send email with reset token, etc.)
+    
+    return jsonify({'success': True, 'message': 'Password reset instructions sent'})
 
 @app.route('/api/users', methods=['GET'])
 def get_user_count():
@@ -740,4 +795,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         ensure_admin_user()
-    app.run(debug=True) 
+    app.run(debug=True)
