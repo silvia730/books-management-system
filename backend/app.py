@@ -363,7 +363,8 @@ def login():
     
     logger.info(f"Login attempt for username: {username}")
     
-    user = User.query.filter_by(username=username).first()
+    # Find user by username or email
+    user = User.query.filter((User.username == username) | (User.email == username)).first()
     
     if not user:
         logger.warning(f"User not found: {username}")
