@@ -1,6 +1,10 @@
+# models.py
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+import logging # Import logging here
+
+logger = logging.getLogger(__name__) # Get a logger instance for this module
 
 db = SQLAlchemy()
 
@@ -31,10 +35,22 @@ class User(db.Model):
     password_hash = db.Column(db.String(512), nullable=False)
 
     def set_password(self, password):
+        # --- DEBUGGING LINE 1 (Registration) ---
+        logger.info(f"DEBUG (models.py set_password): Received password (length={len(password)}). First 5 chars: '{password[:5]}'")
         self.password_hash = generate_password_hash(password)
+        # --- DEBUGGING LINE 2 (Registration) ---
+        logger.info(f"DEBUG (models.py set_password): Generated hash: '{self.password_hash[:40]}...' (length={len(self.password_hash)})") # Log a snippet
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        # --- DEBUGGING LINE 3 (Login) ---
+        logger.info(f"DEBUG (models.py check_password): Checking for user '{self.username}' (ID: {self.id})")
+        logger.info(f"DEBUG (models.py check_password): Provided password (length={len(password)}). First 5 chars: '{password[:5]}'")
+        logger.info(f"DEBUG (models.py check_password): Stored hash (length={len(self.password_hash)}). First 40 chars: '{self.password_hash[:40]}...'")
+
+        is_valid = check_password_hash(self.password_hash, password)
+        # --- DEBUGGING LINE 4 (Login) ---
+        logger.info(f"DEBUG (models.py check_password): check_password_hash result: {is_valid}")
+        return is_valid
 
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
