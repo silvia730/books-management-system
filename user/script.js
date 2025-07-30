@@ -45,9 +45,6 @@ function resetDownloadState() {
     }
 }
 
-// 1. Data for resources
-// Replace resources object and all renderGeneralResources calls with API fetches
-// Example for books:
 function fetchAndRenderResources() {
     if (!API_BASE) {
         console.warn('API_BASE not loaded yet, skipping resource fetch');
@@ -73,88 +70,16 @@ function fetchAndRenderResources() {
             console.log('📄 Papers count:', data.papers?.length || 0);
             console.log('📚 Setbooks count:', data.setbooks?.length || 0);
             
-            renderGeneralResources('.books-section', data.books || getSampleBooks(), 'general');
-            renderGeneralResources('#papers', data.papers || getSamplePapers(), 'paper');
-            renderGeneralResources('#setbooks', data.setbooks || getSampleSetbooks(), 'setbook');
+            renderGeneralResources('.books-section', data.books || [], 'general');
+            renderGeneralResources('#papers', data.papers || [], 'paper');
+            renderGeneralResources('#setbooks', data.setbooks || [], 'setbook');
         })
         .catch((error) => {
             console.error('❌ Failed to fetch resources:', error);
-            renderGeneralResources('.books-section', getSampleBooks(), 'general');
-            renderGeneralResources('#papers', getSamplePapers(), 'paper');
-            renderGeneralResources('#setbooks', getSampleSetbooks(), 'setbook');
+            renderGeneralResources('.books-section', [], 'general');
+            renderGeneralResources('#papers', [], 'paper');
+            renderGeneralResources('#setbooks', [], 'setbook');
         });
-}
-
-// Sample data for demonstration
-function getSampleBooks() {
-    return [
-        {
-            id: '1',
-            title: 'Form 2',
-            description: 'Comprehensive guide covering algebra, geometry, and statistics for secondary students.',
-            cover: 'assets/placeholder.jpg',
-            grade: 'Form 2',
-            subject: 'Mathematics'
-        },
-        {
-            id: '2',
-            title: 'Science Explorer',
-            description: 'Interactive science textbook with experiments and activities for primary students.',
-            cover: 'assets/placeholder.jpg',
-            grade: 'Standard 7',
-            subject: 'Science'
-        },
-        {
-            id: '3',
-            title: 'CBC Life Skills',
-            description: 'Essential life skills curriculum for Competency Based Curriculum implementation.',
-            cover: 'assets/placeholder.jpg',
-            grade: 'Grade 5',
-            subject: 'Life Skills'
-        }
-    ];
-}
-
-function getSamplePapers() {
-    return [
-        {
-            id: '4',
-            title: 'KCPE Mathematics 2023',
-            description: 'Complete KCPE Mathematics past paper with marking scheme.',
-            cover: 'assets/exam paper2.jpg',
-            grade: 'Standard 8',
-            subject: 'Mathematics'
-        },
-        {
-            id: '5',
-            title: 'KCSE English 2023',
-            description: 'KCSE English paper with comprehensive answers.',
-            cover: 'assets/placeholder.jpg',
-            grade: 'Form 4',
-            subject: 'English'
-        }
-    ];
-}
-
-function getSampleSetbooks() {
-    return [
-        {
-            id: '6',
-            title: 'The River and the Source',
-            description: 'Classic Kenyan literature for secondary school students.',
-            cover: 'assets/placeholder.jpg',
-            grade: 'Form 3',
-            subject: 'Literature'
-        },
-        {
-            id: '7',
-            title: 'A Doll\'s House',
-            description: 'Modern drama text for advanced literature studies.',
-            cover: 'assets/placeholder.jpg',
-            grade: 'Form 4',
-            subject: 'Literature'
-        }
-    ];
 }
 
 // Initialize the revision papers slider
@@ -499,20 +424,6 @@ document.querySelector('.hamburger-menu').addEventListener('click', function() {
     this.classList.toggle('open');
     document.querySelector('.mobile-menu-overlay').classList.toggle('active');
 });
-
-// // Close mobile menu
-// document.querySelector('.mobile-menu-close').addEventListener('click', function() {
-//     document.querySelector('.mobile-menu-overlay').classList.remove('active');
-//     document.querySelector('.hamburger-menu').classList.remove('open');
-// });
-
-// // Close mobile menu when clicking on a link
-// document.querySelectorAll('.mobile-nav a').forEach(link => {
-//     link.addEventListener('click', function() {
-//         document.querySelector('.mobile-menu-overlay').classList.remove('active');
-//         document.querySelector('.hamburger-menu').classList.remove('open');
-//     });
-// });
 
 function updateAuthUI() {
     console.log('🔄 Updating authentication UI...');
